@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXFileReference section */
@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C704A6602D46362900BB82E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		C704A6602D46362900BB82E6 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -21,7 +21,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		C704A6502D46362600BB82E6 /* ImageFeed */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C704A6602D46362900BB82E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ImageFeed; sourceTree = "<group>"; };
+		C704A6502D46362600BB82E6 /* ImageFeed */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C704A6602D46362900BB82E6 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */,
+			);
+			path = ImageFeed;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,7 +99,6 @@
 				};
 			};
 			buildConfigurationList = C704A6492D46362600BB82E6 /* Build configuration list for PBXProject "ImageFeed" */;
-			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -101,6 +107,7 @@
 			);
 			mainGroup = C704A6452D46362600BB82E6;
 			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = C704A64F2D46362600BB82E6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
