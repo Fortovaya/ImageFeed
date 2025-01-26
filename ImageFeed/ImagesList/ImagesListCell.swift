@@ -21,13 +21,12 @@ final class ImagesListCell: UITableViewCell {
         setupCell()
     }
     
-    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
     }
     
-    func setupCell(){
+    private func setupCell(){
         cellImage.layer.cornerRadius = 16
         cellImage.layer.masksToBounds = true
         
