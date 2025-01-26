@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
@@ -12,14 +12,71 @@
         <!--ImageList-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" sceneMemberID="viewController">
+                <viewController title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="vxH-dN-Qoj">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" name="#1A1B22"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="200" id="jPS-FZ-jrd" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="414" height="200"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="jPS-FZ-jrd" id="H6G-nO-J6T">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="j8f-OO-dYw">
+                                                    <rect key="frame" x="16" y="4" width="382" height="192"/>
+                                                    <color key="backgroundColor" name="#1A1B22"/>
+                                                </imageView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E46-Zi-snG" userLabel="LikedButton">
+                                                    <rect key="frame" x="354" y="4" width="44" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="44" id="XdO-nG-oky"/>
+                                                        <constraint firstAttribute="width" constant="44" id="zFU-38-aek"/>
+                                                    </constraints>
+                                                    <color key="tintColor" name="#FFFFFF80(50%)"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal" image="No Active"/>
+                                                </button>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sAx-Nx-ww6" userLabel="LabelCell">
+                                                    <rect key="frame" x="24" y="173" width="87" height="15"/>
+                                                    <attributedString key="attributedText">
+                                                        <fragment content="27 августа 2022">
+                                                            <attributes>
+                                                                <color key="NSColor" name="#FFFFFF"/>
+                                                                <font key="NSFont" metaFont="system"/>
+                                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                            </attributes>
+                                                        </fragment>
+                                                    </attributedString>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" name="#1A1B22"/>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="sAx-Nx-ww6" secondAttribute="trailing" constant="8" id="Axj-Hb-4lT"/>
+                                                <constraint firstItem="j8f-OO-dYw" firstAttribute="top" secondItem="H6G-nO-J6T" secondAttribute="top" constant="4" id="N1p-8H-Mux"/>
+                                                <constraint firstItem="j8f-OO-dYw" firstAttribute="trailing" secondItem="E46-Zi-snG" secondAttribute="trailing" id="REA-mO-6bB"/>
+                                                <constraint firstItem="j8f-OO-dYw" firstAttribute="bottom" secondItem="sAx-Nx-ww6" secondAttribute="bottom" constant="8" id="Wxd-7d-jRk"/>
+                                                <constraint firstItem="j8f-OO-dYw" firstAttribute="leading" secondItem="H6G-nO-J6T" secondAttribute="leading" constant="16" id="Wyo-Is-07S"/>
+                                                <constraint firstAttribute="trailing" secondItem="j8f-OO-dYw" secondAttribute="trailing" constant="16" id="cae-XN-tNu"/>
+                                                <constraint firstAttribute="bottom" secondItem="j8f-OO-dYw" secondAttribute="bottom" constant="4" id="e6a-Ud-VyV"/>
+                                                <constraint firstItem="sAx-Nx-ww6" firstAttribute="leading" secondItem="j8f-OO-dYw" secondAttribute="leading" constant="8" id="j6R-us-kW1"/>
+                                                <constraint firstItem="j8f-OO-dYw" firstAttribute="top" secondItem="E46-Zi-snG" secondAttribute="top" id="v0h-AH-f0o"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" name="#1A1B22"/>
+                                        <connections>
+                                            <outlet property="cellImage" destination="j8f-OO-dYw" id="Ih8-jb-l4e"/>
+                                            <outlet property="dateLabel" destination="sAx-Nx-ww6" id="Q6T-qE-MSp"/>
+                                            <outlet property="likeButton" destination="E46-Zi-snG" id="Ce4-eS-aQz"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="BYZ-38-t0r" id="Cu9-VT-fDd"/>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="elM-WM-R8o"/>
@@ -45,8 +102,16 @@
         </scene>
     </scenes>
     <resources>
+        <image name="0" width="1600" height="1059"/>
+        <image name="No Active" width="42" height="42"/>
         <namedColor name="#1A1B22">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="#FFFFFF">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="#FFFFFF80(50%)">
+            <color red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
