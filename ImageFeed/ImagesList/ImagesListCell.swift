@@ -9,13 +9,15 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     
+    // MARK: - @IBOutlet properties
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var dateLabel: UILabel!
     
-    
+    // MARK: - Static properties
     static let reuseIdentifier = "ImagesListCell"
     
+    // MARK: - Override methods
     override func awakeFromNib() {
         super.awakeFromNib()
         setupCell()
@@ -23,9 +25,9 @@ final class ImagesListCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
     }
     
+    // MARK: - Private methods
     private func setupCell(){
         cellImage.layer.cornerRadius = 16
         cellImage.layer.masksToBounds = true

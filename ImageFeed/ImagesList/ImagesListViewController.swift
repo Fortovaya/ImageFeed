@@ -9,9 +9,12 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
     
+    // MARK: - @IBOutlet properties
     @IBOutlet private var tableView: UITableView!
     
+    //MARK: - Private variables
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let currentDate = Date()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -32,7 +35,6 @@ final class ImagesListViewController: UIViewController {
     }
     
     private func setupTableView(){
-        tableView.rowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 }
@@ -44,15 +46,11 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
-        
-        guard let imageListCell = cell as? ImagesListCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as? ImagesListCell else {
             return UITableViewCell()
         }
-        
-        configCell(for: imageListCell, with: indexPath)
-        
-        return imageListCell
+        configCell(for: cell, with: indexPath)
+        return cell
     }
 }
 
@@ -63,7 +61,7 @@ extension ImagesListViewController {
         }
         
         cell.cellImage.image = image
-        cell.dateLabel.text = dateFormatter.string(from: Date())
+        cell.dateLabel.text = dateFormatter.string(from: currentDate)
         
         let isLiked = indexPath.row % 2 == 0
         let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
