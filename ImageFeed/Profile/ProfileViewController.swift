@@ -17,12 +17,13 @@ class ProfileViewController: UIViewController {
     
     var viewControllers: [UIViewController]?
     
-    
+    //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUIProfile()
     }
     
+    // MARK: - Private methods
     private func setupUIProfile(){
         
         self.view.backgroundColor = .ypLightBlack
@@ -46,22 +47,7 @@ class ProfileViewController: UIViewController {
         logoutButton.frame.size = CGSize(width: 44, height: 44)
     }
     
-  
     @IBAction func didTapLogoutButton(_ sender: Any) {
         
     }
-    
-    
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
