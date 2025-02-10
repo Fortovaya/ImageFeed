@@ -31,8 +31,7 @@ final class SingleImageViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
+        setupScrollViewConstraints()
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
@@ -48,6 +47,16 @@ final class SingleImageViewController: UIViewController {
     }
     
     // MARK: - Private Functions
+    private func setupScrollViewConstraints(){
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+    }
+    
     private func setupUISingleImage(){
         sharing.frame.size = CGSize(width: 50, height: 50)
         sharing.backgroundColor = .ypWhite
@@ -86,6 +95,8 @@ final class SingleImageViewController: UIViewController {
         centerImageIfNeeded()
     }
     
+    
+    //MARK: - Action
     @IBAction private func didTapBackButton() {
         dismiss(animated: true, completion: nil)
     }
