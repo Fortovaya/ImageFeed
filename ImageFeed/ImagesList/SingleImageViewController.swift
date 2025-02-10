@@ -90,7 +90,8 @@ final class SingleImageViewController: UIViewController {
         scrollView.contentInset = UIEdgeInsets(top: y, left: x, bottom: y, right: x)
     }
     
-    @objc private func didDoubleTapImage() {
+    @objc
+    private func didDoubleTapImage() {
         scrollView.setZoomScale(initialZoomScale, animated: true)
         centerImageIfNeeded()
     }
