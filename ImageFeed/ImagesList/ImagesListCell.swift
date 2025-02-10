@@ -32,7 +32,30 @@ final class ImagesListCell: UITableViewCell {
         cellImage.layer.cornerRadius = 16
         cellImage.layer.masksToBounds = true
         
+        dateLabel.backgroundColor = UIColor(named: "ypLightBlack")
         dateLabel.font = .systemFont(ofSize: 13, weight: .regular)
         dateLabel.textColor = UIColor(named: "#FFFFFF")
+        
+        addGradientBackground()
+        
+    }
+    
+    private func addGradientBackground() {
+        let gradientLayer = CAGradientLayer()
+        
+        gradientLayer.colors = [
+            UIColor.ypWhite.cgColor,
+            UIColor.ypDarkGray.cgColor
+        ]
+        
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+        
+        gradientLayer.frame = dateLabel.bounds.insetBy(dx: -4, dy: -1)
+        gradientLayer.cornerRadius = 6 // Закругляем углы
+
+        // Добавляем градиент на самый нижний слой
+        dateLabel.layer.insertSublayer(gradientLayer, at: 0)
     }
 }
