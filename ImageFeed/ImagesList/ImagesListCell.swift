@@ -42,17 +42,25 @@ final class ImagesListCell: UITableViewCell {
         let gradientLayer = CAGradientLayer()
         
         gradientLayer.colors = [
-            UIColor.ypWhite.cgColor,
-            UIColor.ypDarkGray.cgColor
+            UIColor.ypWhite.withAlphaComponent(0.2).cgColor,
+            UIColor.ypDarkGray.withAlphaComponent(0.4).cgColor
         ]
         
         gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.startPoint = CGPoint(x: 0.2, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 0.2, y: 1)
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
         
         gradientLayer.frame = dateLabel.bounds.insetBy(dx: -4, dy: -1)
-        gradientLayer.cornerRadius = 6 // Закругляем углы
+        gradientLayer.cornerRadius = 6
         
         dateLabel.layer.insertSublayer(gradientLayer, at: 0)
+        
+        let borderLayer = CAShapeLayer()
+        borderLayer.path = UIBezierPath(roundedRect: gradientLayer.bounds, cornerRadius: 6).cgPath
+        borderLayer.lineWidth = 0.5
+        borderLayer.strokeColor = UIColor.ypWhite.cgColor
+        borderLayer.fillColor = UIColor.clear.cgColor
+        
+        gradientLayer.addSublayer(borderLayer)
     }
 }
