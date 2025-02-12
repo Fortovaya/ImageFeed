@@ -111,11 +111,6 @@ final class SingleImageViewController: UIViewController {
     
 }
 
-
-
-
-
-
 // MARK: - UIScrollViewDelegate
 extension SingleImageViewController: UIScrollViewDelegate {
     
