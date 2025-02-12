@@ -122,7 +122,7 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="D84-Gk-YJl"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="P6n-Hi-GHp"/>
                                 <connections>
-                                    <outlet property="delegate" destination="bBt-rB-8fA" id="53c-ZU-0b7"/>
+                                    <outlet property="delegate" destination="bBt-rB-8fA" id="zBL-Fi-OdP"/>
                                 </connections>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Xh-BN-fgt">
@@ -134,7 +134,7 @@
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="Backward"/>
                                 <connections>
-                                    <action selector="didTapBackButton" destination="bBt-rB-8fA" eventType="touchUpInside" id="dj8-fA-Tio"/>
+                                    <action selector="didTapBackButton" destination="bBt-rB-8fA" eventType="touchUpInside" id="jNi-Mf-Zw8"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Fe-yq-XBE">
@@ -142,7 +142,7 @@
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="Sharing"/>
                                 <connections>
-                                    <action selector="didTapShareButton:" destination="bBt-rB-8fA" eventType="touchUpInside" id="3gy-ty-cn6"/>
+                                    <action selector="didTapShareButton:" destination="bBt-rB-8fA" eventType="touchUpInside" id="dWu-YM-6nY"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -162,9 +162,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="D8N-BW-aCb"/>
                     <connections>
-                        <outlet property="imageView" destination="wD0-4f-aCd" id="u7K-qU-lXp"/>
-                        <outlet property="scrollView" destination="EQ5-Lt-lFh" id="r8A-q8-9f5"/>
-                        <outlet property="sharing" destination="3Fe-yq-XBE" id="O4s-IA-jFt"/>
+                        <outlet property="imageView" destination="wD0-4f-aCd" id="OIo-wz-Czh"/>
+                        <outlet property="scrollView" destination="EQ5-Lt-lFh" id="yjD-Be-ySI"/>
+                        <outlet property="shareButton" destination="3Fe-yq-XBE" id="7Rg-d1-XY2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NmB-ZA-78R" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

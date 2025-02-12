@@ -9,22 +9,21 @@ import UIKit
 
 final class SingleImageViewController: UIViewController {
     
-    // MARK: - IBOutlets
-    @IBOutlet private weak var imageView: UIImageView!
-    @IBOutlet private weak var scrollView: UIScrollView!
-    @IBOutlet private weak var sharing: UIButton!
-    
     // MARK: - Public properties
     var image: UIImage? {
         didSet {
             guard isViewLoaded, let image = image else { return }
-            
             imageView.image = image
             imageView.frame.size = image.size
             rescaleAndCenterImageInScrollView(image: image)
         }
     }
     
+    // MARK: - IBOutlets
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var shareButton: UIButton!
+        
     // MARK: - Private properties
     private var initialZoomScale: CGFloat = 1.0
     
@@ -44,9 +43,11 @@ final class SingleImageViewController: UIViewController {
         imageView.image = image
         imageView.frame.size = image.size
         rescaleAndCenterImageInScrollView(image: image)
+        
+        setupShareButton()
     }
     
-    // MARK: - Private Functions
+    // MARK: - Private Methods
     private func setupScrollViewConstraints(){
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -57,9 +58,8 @@ final class SingleImageViewController: UIViewController {
         ])
     }
     
-    private func setupUISingleImage(){
-        sharing.frame.size = CGSize(width: 50, height: 50)
-        sharing.backgroundColor = .ypWhite
+    private func setupShareButton(){
+        shareButton.frame.size = CGSize(width: 50, height: 50)
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage){
@@ -96,8 +96,7 @@ final class SingleImageViewController: UIViewController {
         centerImageIfNeeded()
     }
     
-    
-    //MARK: - Action
+    // MARK: - IBAction
     @IBAction private func didTapBackButton() {
         dismiss(animated: true, completion: nil)
     }
@@ -112,7 +111,12 @@ final class SingleImageViewController: UIViewController {
     
 }
 
-// MARK: - Extension
+
+
+
+
+
+// MARK: - UIScrollViewDelegate
 extension SingleImageViewController: UIScrollViewDelegate {
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
