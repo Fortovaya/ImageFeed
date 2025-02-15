@@ -15,6 +15,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Unsplash/Constants.swift,
 			);
 			target = C704A64D2D46362600BB82E6 /* ImageFeed */;
 		};
