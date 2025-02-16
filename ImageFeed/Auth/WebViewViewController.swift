@@ -4,11 +4,16 @@
 //
 //  Created by Алина on 16.02.2025.
 //
+
 import UIKit
 import WebKit
 
+enum WebViewConstants {
+    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+}
+
 final class WebViewViewController: UIViewController, WKUIDelegate {
-        
+    
     // MARK: - Private lazy properties
     private lazy var webView: WKWebView = {
         let webView = WKWebView()
@@ -21,6 +26,7 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
     //MARK: - Life cycle
     override func viewDidLoad(){
         configureWebView()
+        loadAuthView()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -39,6 +45,18 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         ])
     }
     
-    
-    
+    private func loadAuthView(){
+        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else { return }
+        
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "scope", value: Constants.accessScope)
+        ]
+        guard let url = urlComponents.url else { return }
+        
+        let request = URLRequest(url: url)
+        webView.load(request)
+    }
 }
