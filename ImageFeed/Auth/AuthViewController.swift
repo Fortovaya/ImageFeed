@@ -28,7 +28,7 @@ class AuthViewController: UIViewController {
         activeButton.titleLabel?.textAlignment = .center
         
         activeButton.addTarget(self, action: #selector(didTapActiveButton), for: .touchUpInside)
-    
+        
         activeButton.translatesAutoresizingMaskIntoConstraints = false
         return activeButton
     }()
@@ -43,6 +43,7 @@ class AuthViewController: UIViewController {
     private func setupUI(){
         configureConstraintsLogoOfUnsplashImageView()
         configureActiveButton()
+        configureBackButton()
     }
     
     private func configureConstraintsLogoOfUnsplashImageView(){
@@ -67,8 +68,18 @@ class AuthViewController: UIViewController {
         ])
     }
     
+    private func configureBackButton() {
+        navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button")
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button")
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = UIColor(named: "#1A1B22")
+    }
+    
     //MARK: - Action
     @objc private func didTapActiveButton(){
-        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let webViewVC = storyboard.instantiateViewController(withIdentifier: "ShowWebView") as? WebViewViewController {
+            navigationController?.pushViewController(webViewVC, animated: true)
+        }
     }
 }
