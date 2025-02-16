@@ -38,7 +38,7 @@ class AuthViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
     }
-    
+        
     // MARK: - Private methods
     private func setupUI(){
         configureConstraintsLogoOfUnsplashImageView()
@@ -78,8 +78,20 @@ class AuthViewController: UIViewController {
     //MARK: - Action
     @objc private func didTapActiveButton(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let webViewVC = storyboard.instantiateViewController(withIdentifier: "ShowWebView") as? WebViewViewController {
+        if let webViewVC = storyboard.instantiateViewController(withIdentifier: "WebViewViewControllerID") as? WebViewViewController {
+            webViewVC.delegate = self
             navigationController?.pushViewController(webViewVC, animated: true)
         }
+    }
+}
+
+extension AuthViewController: WebViewViewControllerDelegate {
+    
+    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        
+    }
+    
+    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
+        vc.dismiss(animated: true)
     }
 }
