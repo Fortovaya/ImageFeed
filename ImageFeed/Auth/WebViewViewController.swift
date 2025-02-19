@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import WebKit
+@preconcurrency import WebKit
 
 enum WebViewConstants {
     static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
@@ -25,12 +25,24 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         return webView
     }()
     
+    private lazy var progressView: UIProgressView = {
+        let progressView = UIProgressView()
+        progressView.progressTintColor = .ypLightBlack
+        progressView.progress = 0.5
+        
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        return progressView
+    }()
+    
     //MARK: - Life cycle
     override func viewDidLoad(){
+        view.backgroundColor = .ypWhite
         configureWebView()
         loadAuthView()
-        
+        configureProgressView()
+
         webView.navigationDelegate = self
+        
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -48,6 +60,17 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+    
+    private func configureProgressView(){
+        view.addSubview(progressView)
+        
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+    }
+    
     
     private func loadAuthView(){
         guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else { return }
