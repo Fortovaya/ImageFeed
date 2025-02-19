@@ -36,17 +36,31 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
     
     //MARK: - Life cycle
     override func viewDidLoad(){
+        super.viewDidLoad()
         view.backgroundColor = .ypWhite
         configureWebView()
         loadAuthView()
         configureProgressView()
-
-        webView.navigationDelegate = self
         
+        webView.navigationDelegate = self
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+    }
+    
+    override func observeValue( forKeyPath keyPath: String?, of object: Any?,change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == #keyPath(WKWebView.estimatedProgress) {
+            updateProgress()
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
+    }
+    
+    //MARK: - Deinit
+    deinit {
+        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
     
     // MARK: - Private methods
@@ -71,7 +85,6 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         ])
     }
     
-    
     private func loadAuthView(){
         guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else { return }
         
@@ -86,9 +99,15 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         let request = URLRequest(url: url)
         webView.load(request)
     }
+    
+    private func updateProgress(){
+        progressView.progress = Float(webView.estimatedProgress)
+        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    }
 }
 
 extension WebViewViewController: WKNavigationDelegate {
+    
     func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
@@ -101,7 +120,7 @@ extension WebViewViewController: WKNavigationDelegate {
             decisionHandler(.allow)
         }
     }
-
+    
     private func code(from navigationAction: WKNavigationAction) -> String? {
         if
             let url = navigationAction.request.url,
@@ -114,5 +133,17 @@ extension WebViewViewController: WKNavigationDelegate {
         } else {
             return nil
         }
+    }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        progressView.isHidden = true
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        progressView.isHidden = true
+    }
+    
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        progressView.isHidden = false
     }
 }
