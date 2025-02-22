@@ -46,6 +46,7 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
     }
     
+    // MARK: - Override methods
     override func observeValue( forKeyPath keyPath: String?, of object: Any?,change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(WKWebView.estimatedProgress) {
             updateProgress()
@@ -54,6 +55,7 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         }
     }
     
+    // MARK: - Override properties
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
@@ -104,15 +106,13 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         progressView.progress = Float(webView.estimatedProgress)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
+    
+ 
 }
 
 extension WebViewViewController: WKNavigationDelegate {
     
-    func webView(
-        _ webView: WKWebView,
-        decidePolicyFor navigationAction: WKNavigationAction,
-        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
-    ) {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
             delegate?.webViewViewController(self, didAuthenticateWithCode: code)
             decisionHandler(.cancel)
