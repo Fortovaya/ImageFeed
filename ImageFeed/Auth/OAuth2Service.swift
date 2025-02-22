@@ -46,22 +46,28 @@ final class OAuth2Service {
             let task = URLSession.shared.data(for: request) { [weak self] result in
                 guard let self = self else { return }
                 
-                switch result {
-                case .success(let data):
-                    do {
-                        let decoder = JSONDecoder()
-                        let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                        completion(.success(response.accessToken))
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let decoder = JSONDecoder()
+                            let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+                            OAuth2TokenStorage.shared.token = response.accessToken
+                            completion(.success(response.accessToken))
+                        }
+                        catch {
+                            print("Ошибка декодирования: \(error)")
+                            completion(.failure(NetworkError.invalidResponseData))
+                        }
+                    case .failure(let error):
+                        print("Ошибка сети: \(error)")
+                        completion(.failure(error))
                     }
-                    catch {
-                        completion(.failure(NetworkError.invalidResponseData))
-                    }
-                case .failure(let error):
-                    completion(.failure(error))
                 }
             }
             task.resume()
-        case .failure(let error):
+        case.failure(let error):
+            print("Ошибка создания запроса: \(error)")
             completion(.failure(error))
         }
     }
@@ -79,6 +85,9 @@ extension URLSession {
                 if 200 ..< 300 ~= statusCode {
                     fulfillCompletionOnTheMainThread(.success(data)) // 3
                 } else {
+                    if let responseString = String(data: data, encoding: .utf8) {
+                        print("Ошибка: статус код \(statusCode), тело ответа: \(responseString)")
+                    }
                     fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode))) // 4
                 }
             } else if let error = error {
