@@ -41,7 +41,7 @@ class AuthViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
     }
-        
+    
     // MARK: - Private methods
     private func setupUI(){
         configureConstraintsLogoOfUnsplashImageView()
@@ -92,6 +92,13 @@ extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true, completion: nil)
+        
+        oauth2Service.fetchOAuthToken(code: code) { result in
+            switch result {
+            case .success(let token): print("Получен токен: \(token)")
+            case .failure(let error): print("Ошибка получения токена: \(error)")
+            }
+        }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {

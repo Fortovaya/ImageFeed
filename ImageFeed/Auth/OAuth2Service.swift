@@ -15,6 +15,7 @@ enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
     case urlSessionError
+    case invalidResponseData
 }
 
 final class OAuth2Service {
@@ -44,17 +45,16 @@ final class OAuth2Service {
         case .success(let request):
             let task = URLSession.shared.data(for: request) { [weak self] result in
                 guard let self = self else { return }
+                
                 switch result {
                 case .success(let data):
                     do {
-                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                           let token = json["access_token"] as? String {
-                            completion(.success(token))
-                        } else {
-                            completion(.failure(NSError(domain: "InvalidData", code: 0, userInfo: nil)))
-                        }
-                    } catch {
-                        completion(.failure(error))
+                        let decoder = JSONDecoder()
+                        let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+                        completion(.success(response.accessToken))
+                    }
+                    catch {
+                        completion(.failure(NetworkError.invalidResponseData))
                     }
                 case .failure(let error):
                     completion(.failure(error))
