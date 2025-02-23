@@ -6,6 +6,7 @@
 //
 import Foundation
 
+//MARK: - Enums
 enum OAuthTokenRequestError: Error {
     case invalidBaseURL
     case invalidURL
@@ -19,6 +20,7 @@ enum NetworkError: Error {
 }
 
 final class OAuth2Service {
+    
     //MARK: - Static properties
     static let shared = OAuth2Service ()
     
@@ -106,12 +108,9 @@ extension URLSession {
             } else if let error = error {
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
             } else {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError)) 
+                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
             }
         })
-        
         return task
     }
 }
-
-
