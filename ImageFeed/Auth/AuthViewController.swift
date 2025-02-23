@@ -12,7 +12,7 @@ protocol AuthViewControllerDelegate: AnyObject {
 }
 
 class AuthViewController: UIViewController {
-    
+    //MARK: - Delegate
     weak var delegate: AuthViewControllerDelegate?
     
     // MARK: - Private lazy properties

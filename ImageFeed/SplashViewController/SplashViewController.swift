@@ -12,7 +12,6 @@ final class SplashViewController: UIViewController {
     //MARK: Private lazy properties
     private lazy var splashImage: UIImageView = {
         let splashImage = UIImageView(image:UIImage(named: "Vector"))
-        
         splashImage.translatesAutoresizingMaskIntoConstraints = false
         return splashImage
     }()
@@ -65,13 +64,6 @@ final class SplashViewController: UIViewController {
                 navigationController?.pushViewController(authViewController, animated: true)
             }
         }
-        
-        // Вывод текущих контроллеров в стеке навигации
-        if let viewControllers = navigationController?.viewControllers {
-            print("Текущие контроллеры в стеке: \(viewControllers)")
-        } else {
-            print("Нет доступных контроллеров в стеке")
-        }
     }
     
     private func switchToTabBarController() {
@@ -88,6 +80,7 @@ final class SplashViewController: UIViewController {
     
 }
 
+//MARK: - Extension
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         switchToTabBarController()

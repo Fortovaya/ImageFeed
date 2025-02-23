@@ -13,7 +13,7 @@ enum WebViewConstants {
 }
 
 final class WebViewViewController: UIViewController, WKUIDelegate {
-    
+    //MARK: - Delegate
     weak var delegate: WebViewViewControllerDelegate?
     
     // MARK: - Private lazy properties
@@ -108,6 +108,7 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
     }
 }
 
+//MARK: - Extension
 extension WebViewViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
