@@ -52,10 +52,7 @@ final class SplashViewController: UIViewController {
         
         if OAuth2TokenStorage.storage.token != nil {
             print("Токен прошел авторизацию")
-            if let tabBarController = storyboard.instantiateViewController(withIdentifier: idTabBarControllerScene) as? UITabBarController{
-                print("Переход на TabBarController")
-                navigationController?.setViewControllers([tabBarController], animated: true)
-            }
+            switchToTabBarController()
         } else {
             print("Токен отсутствует, переход на AuthViewController")
             if let authViewController = storyboard.instantiateViewController(withIdentifier: idAuthViewController) as? AuthViewController {
@@ -77,7 +74,6 @@ final class SplashViewController: UIViewController {
         
         window.rootViewController = tabBarController
     }
-    
 }
 
 //MARK: - Extension
@@ -86,4 +82,3 @@ extension SplashViewController: AuthViewControllerDelegate {
         switchToTabBarController()
     }
 }
-
