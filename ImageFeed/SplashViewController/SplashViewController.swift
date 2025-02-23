@@ -9,14 +9,14 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
-    //MARK: Private lazy properties
+    //MARK: - Private lazy properties
     private lazy var splashImage: UIImageView = {
         let splashImage = UIImageView(image:UIImage(named: "Vector"))
         splashImage.translatesAutoresizingMaskIntoConstraints = false
         return splashImage
     }()
     
-    //MARK: Private properties
+    //MARK: - Private properties
     private let idAuthViewController = "showAuthVCID"
     private let idTabBarControllerScene = "TabBarViewController"
     

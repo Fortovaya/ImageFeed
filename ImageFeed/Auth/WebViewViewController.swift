@@ -8,11 +8,14 @@
 import UIKit
 @preconcurrency import WebKit
 
-enum WebViewConstants {
-    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-}
+
 
 final class WebViewViewController: UIViewController, WKUIDelegate {
+    //MARK: - Enum
+    enum WebViewConstants {
+        static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+    }
+    
     //MARK: - Delegate
     weak var delegate: WebViewViewControllerDelegate?
     
