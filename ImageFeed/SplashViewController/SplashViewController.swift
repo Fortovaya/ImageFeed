@@ -57,7 +57,7 @@ final class SplashViewController: UIViewController {
                 navigationController?.setViewControllers([tabBarController], animated: true)
             }
         } else {
-            print("Токен отсутствует, переход на AuthNavigationController")
+            print("Токен отсутствует, переход на AuthViewController")
             if let authViewController = storyboard.instantiateViewController(withIdentifier: idAuthViewController) as? AuthViewController {
                 print("Переход на AuthViewController")
                 authViewController.delegate = self
