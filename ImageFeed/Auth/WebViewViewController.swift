@@ -20,7 +20,6 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
     private lazy var webView: WKWebView = {
         let webView = WKWebView()
         webView.backgroundColor = .ypWhite
-        
         webView.translatesAutoresizingMaskIntoConstraints = false
         return webView
     }()
