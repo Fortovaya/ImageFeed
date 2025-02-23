@@ -19,10 +19,16 @@ enum NetworkError: Error {
 }
 
 final class OAuth2Service {
+    //MARK: - Static properties
     static let shared = OAuth2Service ()
     
-    private init(){ }
+    //MARK: - Private properties
+    private let oAuth2TokenStorage = OAuth2TokenStorage.storage
     
+    //MARK: - Init
+    private init(){ }
+
+    //MARK: Private methods
     func makeOAuthTokenRequest(code: String) -> Result<URLRequest, OAuthTokenRequestError> {
         guard let baseURL = URL(string: "https://unsplash.com") else { return.failure(.invalidBaseURL) }
         guard let url = URL(
@@ -52,7 +58,7 @@ final class OAuth2Service {
                         do {
                             let decoder = JSONDecoder()
                             let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                            OAuth2TokenStorage.shared.token = response.accessToken
+                            self.oAuth2TokenStorage.token = response.accessToken
                             completion(.success(response.accessToken))
                         }
                         catch {
@@ -73,6 +79,7 @@ final class OAuth2Service {
     }
 }
 
+// MARK: - Extension
 extension URLSession {
     func data(for request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
         

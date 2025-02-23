@@ -17,7 +17,7 @@ final class OAuth2TokenStorage {
         }
     }
     
-    static let shared = OAuth2TokenStorage()
+    static let storage = OAuth2TokenStorage()
     
     private let tokenKey = "oauthToken"
     
