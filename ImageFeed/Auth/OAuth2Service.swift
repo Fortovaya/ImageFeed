@@ -10,6 +10,7 @@ import Foundation
 enum OAuthTokenRequestError: Error {
     case invalidBaseURL
     case invalidURL
+    case invalidRequest
 }
 
 enum NetworkError: Error {
@@ -17,6 +18,7 @@ enum NetworkError: Error {
     case urlRequestError(Error)
     case urlSessionError
     case invalidResponseData
+    case missingToken
 }
 
 final class OAuth2Service {
@@ -26,6 +28,9 @@ final class OAuth2Service {
     
     //MARK: - Private properties
     private let oAuth2TokenStorage = OAuth2TokenStorage.storage
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
     
     //MARK: - Init
     private init(){ }
@@ -55,9 +60,21 @@ final class OAuth2Service {
     }
     
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        
+        if let currentTask = task {
+            if lastCode == code {
+                completion(.failure(OAuthTokenRequestError.invalidRequest))
+                return
+            }
+            currentTask.cancel()
+        }
+        
+        lastCode = code
+        
         switch makeOAuthTokenRequest(code: code) {
         case .success(let request):
-            let task = URLSession.shared.data(for: request) { [weak self] result in
+            let task = urlSession.data(for: request) { [weak self] result in
                 guard let self = self else { return }
                 
                 DispatchQueue.main.async {
@@ -77,9 +94,13 @@ final class OAuth2Service {
                         print("Ошибка сети: \(error.localizedDescription)")
                         completion(.failure(error))
                     }
+                    self.task = nil
+                    self.lastCode = nil
                 }
             }
+            self.task = task
             task.resume()
+    
         case.failure(let error):
             print("Ошибка создания запроса: \(error)")
             completion(.failure(error))
