@@ -7,32 +7,40 @@
 
 import Foundation
 
-final class ProfileService {
-    //MARK: - Struct
-    struct ProfileResult: Codable {
-        let userName: String
-        let firstName: String
-        let lastName: String
-        let bio: String
-    }
+//MARK: - Struct
+struct ProfileResult: Codable {
+    let username: String
+    let firstName: String
+    let lastName: String
+    let bio: String?
     
-    struct Profile {
-        let userName: String
-        let firstName: String
-        let lastName: String
-        let name: String
-        let loginName: String
-        let bio: String
-        
-        init(from profileResult: ProfileResult) {
-            self.userName = profileResult.userName
-            self.firstName = profileResult.firstName
-            self.lastName = profileResult.lastName
-            self.name = "\(profileResult.firstName) \(profileResult.lastName)"
-            self.loginName = "@\(profileResult.userName)"
-            self.bio = profileResult.bio
-        }
+    enum CodingKeys: String, CodingKey {
+          case username
+          case firstName = "first_name"
+          case lastName = "last_name"
+          case bio = "bio"
+      }
+}
+
+struct Profile {
+    let userName: String
+    let firstName: String
+    let lastName: String
+    let name: String
+    let loginName: String
+    let bio: String?
+    
+    init(from profileResult: ProfileResult) {
+        self.userName = profileResult.username
+        self.firstName = profileResult.firstName
+        self.lastName = profileResult.lastName
+        self.name = "\(profileResult.firstName) \(profileResult.lastName)"
+        self.loginName = "@\(profileResult.username)"
+        self.bio = profileResult.bio
     }
+}
+
+final class ProfileService {
     
     //MARK: - Private variables
     private let oAuth2TokenStorage = OAuth2TokenStorage.storage
@@ -40,12 +48,17 @@ final class ProfileService {
     private var task: URLSessionTask?
     private var isFetching = false // для отслеживания выполнения процесса (гонки)
     
-    //MARK: - Private Method (Get)
-    private func makeProfileRequest(token: String) -> Result<URLRequest, NetworkError> {
-        let urlString = "https://api.unsplash.com/me"
-        guard let url = URL(string: urlString) else {
+    static let shared = ProfileService()
+    private init() {}
+    
+    private(set) var profile: Profile?
+    
+    //MARK: - Private Method
+    func makeProfileRequest(token: String) -> Result<URLRequest, OAuthTokenRequestError> {
+                
+        guard let url = URL(string: "https://api.unsplash.com/me") else {
             print("Ошибка: Неверный URL")
-            return .failure(.urlRequestError(NSError(domain: "Invalid URL", code: 1001, userInfo: nil)))
+            return.failure(.invalidBaseURL)
         }
         
         var request = URLRequest(url: url)
@@ -55,7 +68,7 @@ final class ProfileService {
         return .success(request)
     }
     
-    func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) -> Void {
+    func fetchProfile(completion: @escaping (Result<Profile, NetworkError>) -> Void) -> Void {
         guard !isFetching else {
             print("Запрос уже выполняется")
             return
@@ -71,7 +84,7 @@ final class ProfileService {
         }
         
         switch makeProfileRequest(token: token){
-        case .failure(let error):
+        case .failure(_):
             print("Ошибка создания запроса")
             isFetching = false
             return
@@ -93,15 +106,15 @@ final class ProfileService {
                 
                 DispatchQueue.main.async {
                     do {
-                        // Используем JSONDecoder для декодирования ответа
                         let decoder = JSONDecoder()
                         let profileResult = try decoder.decode(ProfileResult.self, from: data)
                         let profile = Profile(from: profileResult)
+                        self.profile = profile
                         
                         completion(.success(profile))
                     } catch {
                         print("Ошибка декодирования: \(error.localizedDescription)")
-                        completion(.failure(error))
+                        completion(.failure(NetworkError.urlRequestError(error)))
                     }
                 }
             }

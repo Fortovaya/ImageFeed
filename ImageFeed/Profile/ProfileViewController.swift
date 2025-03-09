@@ -9,8 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
-    // MARK: - Private lazy properties
-    
+    // MARK: - Private properties
     private lazy var avatarImageView: UIImageView = {
         let avatarImage = UIImage(named: "Photo")
         let avatarImageView = UIImageView(image: avatarImage)
@@ -54,10 +53,13 @@ final class ProfileViewController: UIViewController {
         return logoutButton
     }()
     
+    private let profileService = ProfileService.shared
+    
     //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        updateProfileDetails()
     }
     
     // MARK: - Private methods
@@ -124,6 +126,17 @@ final class ProfileViewController: UIViewController {
             logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26),
             logoutButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor)
         ])
+    }
+    
+    private func updateProfileDetails() {
+        if let profile = profileService.profile {
+            print("Profile loaded: \(profile.name), \(profile.loginName), \(String(describing: profile.bio))")
+            nameLabel.text = profile.name
+            loginNameLabel.text = profile.loginName
+            descriptionLabel.text = profile.bio
+        } else {
+            print("Профиль не загружен")
+        }
     }
     
     //MARK: - Action

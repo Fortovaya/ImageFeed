@@ -19,12 +19,15 @@ final class SplashViewController: UIViewController {
     //MARK: - Private properties
     private let idAuthViewController = "showAuthVCID"
     private let idTabBarControllerScene = "TabBarViewController"
+    private let profileService = ProfileService.shared
+    private let storage = OAuth2TokenStorage.storage
     
     //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypLightBlack
         configureConstraintsSplashImage()
+        handleAuthorizationFlow()
     }
     
     // MARK: - Override methods
@@ -45,6 +48,14 @@ final class SplashViewController: UIViewController {
             splashImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 228),
             splashImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
         ])
+    }
+    
+    private func handleAuthorizationFlow() {
+        if let token = storage.token {
+            fetchProfile(token: token)
+        } else {
+            validateAuthorization()
+        }
     }
     
     private func validateAuthorization(){
@@ -74,11 +85,38 @@ final class SplashViewController: UIViewController {
         
         window.rootViewController = tabBarController
     }
+    
+    private func fetchProfile(token: String) {
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(_):
+                self.switchToTabBarController()
+            case .failure(let error):
+                print("Ошибка при загрузке профиля: \(error)")
+                self.showErrorAlert(error)
+            }
+        }
+    }
+    
+    private func showErrorAlert(_ error: Error) {
+        let alert = UIAlertController(title: "Ошибка", message: "Не удалось загрузить профиль: \(error.localizedDescription)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "ОК", style: .default))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 //MARK: - Extension
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
-        switchToTabBarController()
+        vc.dismiss(animated: true)
+        guard let token = storage.token else {
+            return
+        }
+        fetchProfile(token: token)
     }
 }
