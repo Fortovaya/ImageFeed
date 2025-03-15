@@ -54,13 +54,25 @@ final class ProfileViewController: UIViewController {
     }()
     
     private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+    //MARK: - Deinit
+    deinit {
+        if let observer = profileImageServiceObserver {
+                NotificationCenter.default.removeObserver(observer)
+            }
+    }
     
     //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         updateProfileDetails()
+        addProfileImageObserver()
+        updateAvatar()
     }
+        
+
     
     // MARK: - Private methods
     private func setupUI(){
@@ -137,6 +149,24 @@ final class ProfileViewController: UIViewController {
         } else {
             print("Профиль не загружен")
         }
+    }
+    
+    private func updateAvatar(){
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+    }
+    
+    private func addProfileImageObserver(){
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                self?.updateAvatar()
+            }
     }
     
     //MARK: - Action

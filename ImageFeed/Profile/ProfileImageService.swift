@@ -26,6 +26,8 @@ final class ProfileImageService {
     static let shared = ProfileImageService()
     private init(){}
     
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    
     //MARK: - Private variables
     private let oAuth2TokenStorage = OAuth2TokenStorage.storage
     private let urlSession = URLSession.shared
@@ -90,13 +92,20 @@ final class ProfileImageService {
                     do {
                         let decoder = JSONDecoder()
                         let userResult = try decoder.decode(UserResult.self, from: data)
-                        guard let smallImageUrl = userResult.profileImage?.small else {
+                        guard let profileImageURL = userResult.profileImage?.small else {
                             completion(.failure(.invalidResponseData))
                             return
                         }
-                        self.avatarURL = smallImageUrl
                         
-                        completion(.success(smallImageUrl))
+                        NotificationCenter.default.post(
+                                name: ProfileImageService.didChangeNotification,
+                                object: self,
+                                userInfo: ["URL": profileImageURL]
+                        )
+                        
+                        self.avatarURL = profileImageURL
+                        
+                        completion(.success(profileImageURL))
                     } catch {
                         print("Ошибка декодирования makeProfileImageRequest: \(error.localizedDescription)")
                         completion(.failure(NetworkError.urlRequestError(error)))
