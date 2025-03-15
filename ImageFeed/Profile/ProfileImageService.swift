@@ -1,62 +1,43 @@
 //
-//  ProfileService.swift
+//  ProfileImageService.swift
 //  ImageFeed
 //
-//  Created by Алина on 02.03.2025.
+//  Created by Алина on 09.03.2025.
 //
 
 import Foundation
 
-//MARK: - Struct
-struct ProfileResult: Codable {
-    let username: String
-    let firstName: String
-    let lastName: String
-    let bio: String?
+struct UserResult: Codable {
+    let profileImage: ProfileImage?
     
     enum CodingKeys: String, CodingKey {
-          case username
-          case firstName = "first_name"
-          case lastName = "last_name"
-          case bio = "bio"
-      }
-}
-
-struct Profile {
-    let userName: String
-    let firstName: String
-    let lastName: String
-    let name: String
-    let loginName: String
-    let bio: String?
+        case profileImage = "profile_image"
+    }
     
-    init(from profileResult: ProfileResult) {
-        self.userName = profileResult.username
-        self.firstName = profileResult.firstName
-        self.lastName = profileResult.lastName
-        self.name = "\(profileResult.firstName) \(profileResult.lastName)"
-        self.loginName = "@\(profileResult.username)"
-        self.bio = profileResult.bio
+    struct ProfileImage: Codable {
+        let small: String
+        let medium: String
+        let large: String
     }
 }
 
-final class ProfileService {
+final class ProfileImageService {
+    //MARK: - Static variables
+    static let shared = ProfileImageService()
+    private init(){}
     
     //MARK: - Private variables
     private let oAuth2TokenStorage = OAuth2TokenStorage.storage
     private let urlSession = URLSession.shared
+    private(set) var avatarURL: String?
     private var task: URLSessionTask?
-    private var isFetching = false // для отслеживания выполнения процесса (гонки)
-    
-    static let shared = ProfileService()
-    private init() {}
-    
-    private(set) var profile: Profile?
+    private var isFetching = false
     
     //MARK: - Private Method
-    func makeProfileRequest(token: String) -> Result<URLRequest, OAuthTokenRequestError> {
-                
-        guard let url = URL(string: "https://api.unsplash.com/me") else {
+    func makeProfileImageRequest(username: String, token: String) -> Result<URLRequest, OAuthTokenRequestError> {
+        let urlString = "https://api.unsplash.com/users/\(username)"
+        
+        guard let url = URL(string: urlString) else {
             print("Ошибка: Неверный URL ProfileRequest")
             return.failure(.invalidBaseURL)
         }
@@ -68,7 +49,7 @@ final class ProfileService {
         return .success(request)
     }
     
-    func fetchProfile(completion: @escaping (Result<Profile, NetworkError>) -> Void) -> Void {
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, NetworkError>) -> Void) {
         guard !isFetching else {
             print("Запрос уже выполняется")
             return
@@ -78,16 +59,17 @@ final class ProfileService {
         
         guard let token = oAuth2TokenStorage.token else {
             print("Ошибка: Токен отсутствует")
-            completion(.failure(NetworkError.missingToken))
+            completion(.failure(.missingToken))
             isFetching = false
             return
         }
         
-        switch makeProfileRequest(token: token){
+        switch makeProfileImageRequest(username: username, token: token){
         case .failure(let error):
-            print("Ошибка создания запроса makeProfileRequest: \(error)")
+            print("Ошибка создания запроса makeProfileImageRequest: \(error)")
+            completion(.failure(.urlRequestError(error)))
             isFetching = false
-            return
+            
         case .success(let request):
             let task = urlSession.dataTask(with: request){ data, response, error in
                 self.isFetching = false // Сбрасываем флаг после завершения запроса
@@ -99,7 +81,7 @@ final class ProfileService {
                 }
                 
                 guard let data = data else {
-                    print("Ошибка: Нет данных в ответе makeProfileRequest")
+                    print("Ошибка: Нет данных в ответе makeProfileImageRequest")
                     completion(.failure(NetworkError.invalidResponseData))
                     return
                 }
@@ -107,13 +89,16 @@ final class ProfileService {
                 DispatchQueue.main.async {
                     do {
                         let decoder = JSONDecoder()
-                        let profileResult = try decoder.decode(ProfileResult.self, from: data)
-                        let profile = Profile(from: profileResult)
-                        self.profile = profile
+                        let userResult = try decoder.decode(UserResult.self, from: data)
+                        guard let smallImageUrl = userResult.profileImage?.small else {
+                            completion(.failure(.invalidResponseData))
+                            return
+                        }
+                        self.avatarURL = smallImageUrl
                         
-                        completion(.success(profile))
+                        completion(.success(smallImageUrl))
                     } catch {
-                        print("Ошибка декодирования makeProfileRequest: \(error.localizedDescription)")
+                        print("Ошибка декодирования makeProfileImageRequest: \(error.localizedDescription)")
                         completion(.failure(NetworkError.urlRequestError(error)))
                     }
                 }
@@ -123,3 +108,5 @@ final class ProfileService {
         }
     }
 }
+
+

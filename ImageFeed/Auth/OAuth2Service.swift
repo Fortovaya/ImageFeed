@@ -19,6 +19,7 @@ enum NetworkError: Error {
     case urlSessionError
     case invalidResponseData
     case missingToken
+    case requestFailed
 }
 
 final class OAuth2Service {
