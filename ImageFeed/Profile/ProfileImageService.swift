@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Kingfisher
 
 struct UserResult: Codable {
     let profileImage: ProfileImage?
@@ -78,12 +79,22 @@ final class ProfileImageService {
                 self.isFetching = false // Сбрасываем флаг после завершения запроса
                 
                 DispatchQueue.main.async {
+                    print("JSON response: \(String(describing: result))")
                     switch result {
                     case .success(let userResult):
+                        print("Успешный ответ от API: \(userResult)")
+                        
+                        print("JSON profileImage: \(String(describing: userResult.profileImage))")
+
                         guard let profileImageURL = userResult.profileImage?.small else {
+                            print("Ошибка: profileImage отсутствует в ответе API")
                             completion(.failure(.invalidResponseData))
                             return
                         }
+                        
+                        print("Полученный URL аватарки: \(profileImageURL)")
+                        
+                        self.avatarURL = profileImageURL
                         
                         NotificationCenter.default.post(
                             name: ProfileImageService.didChangeNotification,
@@ -100,8 +111,8 @@ final class ProfileImageService {
                     }
                 }
             }
-                self.task = task
-                task.resume()
-            }
+            self.task = task
+            task.resume()
         }
     }
+}

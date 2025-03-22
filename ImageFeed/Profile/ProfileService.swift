@@ -98,6 +98,17 @@ final class ProfileService {
                         let profile = Profile(from: profileResult)
                         self.profile = profile
                         completion(.success(profile))
+                        
+                        print("Профиль загружен, запрашиваем аватар...")
+                        ProfileImageService.shared.fetchProfileImageURL(username: profile.userName) { result in
+                            switch result {
+                            case .success(let avatarURL):
+                                print("Аватар успешно загружен: \(avatarURL)")
+                            case .failure(let error):
+                                print("Ошибка загрузки аватара: \(error)")
+                            }
+                        }
+                        
                     case .failure(let error):
                         print("Ошибка сети makeProfileRequest: \(error.localizedDescription)")
                         completion(.failure(.urlRequestError(error)))

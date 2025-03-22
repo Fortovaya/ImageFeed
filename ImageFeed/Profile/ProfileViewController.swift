@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -59,8 +60,8 @@ final class ProfileViewController: UIViewController {
     //MARK: - Deinit
     deinit {
         if let observer = profileImageServiceObserver {
-                NotificationCenter.default.removeObserver(observer)
-            }
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
     
     //MARK: - Life cycle
@@ -71,8 +72,8 @@ final class ProfileViewController: UIViewController {
         addProfileImageObserver()
         updateAvatar()
     }
-        
-
+    
+    
     
     // MARK: - Private methods
     private func setupUI(){
@@ -152,21 +153,25 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateAvatar(){
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let updateUrl = URL(string: profileImageURL)
-        else { return }
-        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+              let updateUrl = URL(string: profileImageURL)
+        else {
+            print("Ошибка: avatarURL отсутствует или невалидный")
+            return
+        }
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        print("Обновляем аватар: \(updateUrl.absoluteString)")
+        avatarImageView.kf.setImage(with: updateUrl, placeholder: UIImage(named: "PlaceholderAvatar"), options: [.processor(processor)])
     }
     
     private func addProfileImageObserver(){
         profileImageServiceObserver = NotificationCenter.default.addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                self?.updateAvatar()
-            }
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.updateAvatar()
+        }
     }
     
     //MARK: - Action
