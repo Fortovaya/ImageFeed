@@ -5,15 +5,20 @@
 //  Created by Алина on 22.02.2025.
 //
 import Foundation
+import SwiftKeychainWrapper
 
 final class OAuth2TokenStorage {
     
     var token: String? {
         get {
-            return UserDefaults.standard.string(forKey: tokenKey)
+            return KeychainWrapper.standard.string(forKey: tokenKey)
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: tokenKey)
+            guard let newValue = newValue else {
+                KeychainWrapper.standard.removeObject(forKey: tokenKey)
+                return
+            }
+            KeychainWrapper.standard.set(newValue, forKey: tokenKey)
         }
     }
     
@@ -23,16 +28,3 @@ final class OAuth2TokenStorage {
     
     private init() { }
 }
-
-/*
-let token = "<Token пользователя>"
-let isSuccess = KeychainWrapper.standard.set(token, forKey: "Auth token")
-guard isSuccess else {
-    // ошибка
-}
- 
- Удалить данные:
- 
- let removeSuccessful: Bool = KeychainWrapper.standard.removeObject(forKey: "Auth token")
- 
-*/
