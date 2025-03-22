@@ -73,49 +73,35 @@ final class ProfileImageService {
             isFetching = false
             
         case .success(let request):
-            let task = urlSession.dataTask(with: request){ data, response, error in
+            let task = urlSession.objectTask(for: request){ [weak self] (result: Result<UserResult, Error>) in
+                guard let self = self else { return }
                 self.isFetching = false // Сбрасываем флаг после завершения запроса
                 
-                if let error = error {
-                    print ("Ошибка:\(error.localizedDescription)")
-                    completion(.failure(NetworkError.invalidResponseData))
-                    return
-                }
-                
-                guard let data = data else {
-                    print("Ошибка: Нет данных в ответе makeProfileImageRequest")
-                    completion(.failure(NetworkError.invalidResponseData))
-                    return
-                }
-                
                 DispatchQueue.main.async {
-                    do {
-                        let decoder = JSONDecoder()
-                        let userResult = try decoder.decode(UserResult.self, from: data)
+                    switch result {
+                    case .success(let userResult):
                         guard let profileImageURL = userResult.profileImage?.small else {
                             completion(.failure(.invalidResponseData))
                             return
                         }
                         
                         NotificationCenter.default.post(
-                                name: ProfileImageService.didChangeNotification,
-                                object: self,
-                                userInfo: ["URL": profileImageURL]
+                            name: ProfileImageService.didChangeNotification,
+                            object: self,
+                            userInfo: ["URL": profileImageURL]
                         )
                         
                         self.avatarURL = profileImageURL
-                        
                         completion(.success(profileImageURL))
-                    } catch {
-                        print("Ошибка декодирования makeProfileImageRequest: \(error.localizedDescription)")
-                        completion(.failure(NetworkError.urlRequestError(error)))
+                        
+                    case .failure(let error):
+                        print("Ошибка сети makeProfileImageRequest: \(error.localizedDescription)")
+                        completion(.failure(.urlRequestError(error)))
                     }
                 }
             }
-            self.task = task
-            task.resume()
+                self.task = task
+                task.resume()
+            }
         }
     }
-}
-
-

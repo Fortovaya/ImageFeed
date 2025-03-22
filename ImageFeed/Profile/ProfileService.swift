@@ -15,11 +15,11 @@ struct ProfileResult: Codable {
     let bio: String?
     
     enum CodingKeys: String, CodingKey {
-          case username
-          case firstName = "first_name"
-          case lastName = "last_name"
-          case bio = "bio"
-      }
+        case username
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case bio = "bio"
+    }
 }
 
 struct Profile {
@@ -55,7 +55,7 @@ final class ProfileService {
     
     //MARK: - Private Method
     func makeProfileRequest(token: String) -> Result<URLRequest, OAuthTokenRequestError> {
-                
+        
         guard let url = URL(string: "https://api.unsplash.com/me") else {
             print("Ошибка: Неверный URL ProfileRequest")
             return.failure(.invalidBaseURL)
@@ -87,34 +87,20 @@ final class ProfileService {
         case .failure(let error):
             print("Ошибка создания запроса makeProfileRequest: \(error)")
             isFetching = false
-            return
         case .success(let request):
-            let task = urlSession.dataTask(with: request){ data, response, error in
+            let task = urlSession.objectTask(for: request){ [weak self] (result: Result<ProfileResult, Error>) in
+                guard let self = self else { return }
                 self.isFetching = false // Сбрасываем флаг после завершения запроса
                 
-                if let error = error {
-                    print ("Ошибка:\(error.localizedDescription)")
-                    completion(.failure(NetworkError.invalidResponseData))
-                    return
-                }
-                
-                guard let data = data else {
-                    print("Ошибка: Нет данных в ответе makeProfileRequest")
-                    completion(.failure(NetworkError.invalidResponseData))
-                    return
-                }
-                
                 DispatchQueue.main.async {
-                    do {
-                        let decoder = JSONDecoder()
-                        let profileResult = try decoder.decode(ProfileResult.self, from: data)
+                    switch result {
+                    case .success(let profileResult):
                         let profile = Profile(from: profileResult)
                         self.profile = profile
-                        
                         completion(.success(profile))
-                    } catch {
-                        print("Ошибка декодирования makeProfileRequest: \(error.localizedDescription)")
-                        completion(.failure(NetworkError.urlRequestError(error)))
+                    case .failure(let error):
+                        print("Ошибка сети makeProfileRequest: \(error.localizedDescription)")
+                        completion(.failure(.urlRequestError(error)))
                     }
                 }
             }
