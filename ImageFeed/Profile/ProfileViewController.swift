@@ -73,8 +73,6 @@ final class ProfileViewController: UIViewController {
         updateAvatar()
     }
     
-    
-    
     // MARK: - Private methods
     private func setupUI(){
         configureConstraintsAvatarImageView()
@@ -153,9 +151,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateAvatar(){
-        guard let profileImageURL = ProfileImageService.shared.avatarURL,
-              let updateUrl = URL(string: profileImageURL)
-        else {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL, let updateUrl = URL(string: profileImageURL) else {
             print("Ошибка: avatarURL отсутствует или невалидный")
             return
         }

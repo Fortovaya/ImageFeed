@@ -23,3 +23,16 @@ final class OAuth2TokenStorage {
     
     private init() { }
 }
+
+/*
+let token = "<Token пользователя>"
+let isSuccess = KeychainWrapper.standard.set(token, forKey: "Auth token")
+guard isSuccess else {
+    // ошибка
+}
+ 
+ Удалить данные:
+ 
+ let removeSuccessful: Bool = KeychainWrapper.standard.removeObject(forKey: "Auth token")
+ 
+*/
