@@ -9,9 +9,6 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
     
-    // MARK: - @IBOutlet properties
-    @IBOutlet private var tableView: UITableView!
-    
     //MARK: - Private variables
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private let currentDate = Date()
@@ -22,6 +19,15 @@ final class ImagesListViewController: UIViewController {
         formatter.dateStyle = .long
         formatter.timeStyle = .none
         return formatter
+    }()
+    
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        return tableView
     }()
     
     //MARK: - Life cycle
@@ -54,6 +60,15 @@ final class ImagesListViewController: UIViewController {
     
     // MARK: - Private methods
     private func setupTableView(){
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 }

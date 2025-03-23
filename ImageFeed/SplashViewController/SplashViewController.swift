@@ -59,20 +59,18 @@ final class SplashViewController: UIViewController {
     }
     
     private func validateAuthorization(){
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
+        //        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if OAuth2TokenStorage.storage.token != nil {
             print("Токен прошел авторизацию")
             switchToTabBarController()
         } else {
             print("Токен отсутствует, переход на AuthViewController")
-            if let authViewController = storyboard.instantiateViewController(withIdentifier: idAuthViewController) as? AuthViewController {
-                print("Переход на AuthViewController")
-                authViewController.delegate = self
-                navigationController?.pushViewController(authViewController, animated: true)
-            }
+            let authViewController = AuthViewController()
+            authViewController.delegate = self
+            navigationController?.pushViewController(authViewController, animated: true)
         }
     }
+    
     
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
@@ -80,8 +78,8 @@ final class SplashViewController: UIViewController {
             return
         }
         
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: idTabBarControllerScene)
+        let tabBarController = TabBarController() // Создаём по коду
+        print("Переход на \(TabBarController.identifier)") // Лог для наглядности
         
         window.rootViewController = tabBarController
     }
@@ -106,6 +104,7 @@ final class SplashViewController: UIViewController {
             }
         }
     }
+    
     
     private func showErrorAlert(_ error: Error) {
         let alert = UIAlertController(title: "Ошибка", message: "Не удалось загрузить профиль: \(error.localizedDescription)", preferredStyle: .alert)

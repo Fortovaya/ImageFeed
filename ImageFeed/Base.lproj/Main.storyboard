@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="evw-6C-sHh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -71,11 +71,6 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="#1A1B22"/>
-                                        <connections>
-                                            <outlet property="cellImage" destination="j8f-OO-dYw" id="Ih8-jb-l4e"/>
-                                            <outlet property="dateLabel" destination="sAx-Nx-ww6" id="Q6T-qE-MSp"/>
-                                            <outlet property="likeButton" destination="E46-Zi-snG" id="Ce4-eS-aQz"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
@@ -96,7 +91,6 @@
                     <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="i6o-hm-jrj"/>
                     <navigationItem key="navigationItem" id="gDy-kl-aP8"/>
                     <connections>
-                        <outlet property="tableView" destination="vxH-dN-Qoj" id="YMf-0f-Am5"/>
                         <segue destination="bBt-rB-8fA" kind="presentation" identifier="ShowSingleImage" id="qYf-wT-y5T"/>
                     </connections>
                 </viewController>
@@ -261,6 +255,7 @@
         <!--Navigation Controller-->
         <scene sceneID="ovE-dW-NGR">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Cen-TL-vqy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController storyboardIdentifier="navigationControllerAuthID" automaticallyAdjustsScrollViewInsets="NO" id="qSs-67-JqH" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="0s2-eV-BrE">
@@ -272,27 +267,8 @@
                         <segue destination="q6P-W1-CUC" kind="relationship" relationship="rootViewController" id="c4O-Zz-URP"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Cen-TL-vqy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1300" y="-773.23943661971839"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="c01-iz-1G8">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="evw-6C-sHh" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="f9r-D3-XgW">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="suP-78-Ywd" kind="relationship" relationship="rootViewController" id="naL-rc-hOR"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Uty-tD-c9H" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2938" y="-232"/>
         </scene>
     </scenes>
     <resources>
