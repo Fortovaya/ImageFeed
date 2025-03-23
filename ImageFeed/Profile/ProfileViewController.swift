@@ -14,6 +14,8 @@ final class ProfileViewController: UIViewController {
     private lazy var avatarImageView: UIImageView = {
         let avatarImage = UIImage(named: "Photo")
         let avatarImageView = UIImageView(image: avatarImage)
+        avatarImageView.contentMode = .scaleAspectFill
+        avatarImageView.clipsToBounds = true
         return avatarImageView
     }()
     
@@ -71,6 +73,12 @@ final class ProfileViewController: UIViewController {
         updateProfileDetails()
         addProfileImageObserver()
         updateAvatar()
+    }
+    
+    //MARK: - Override methods
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        avatarImageView.layer.cornerRadius = avatarImageView.frame.width / 2
     }
     
     // MARK: - Private methods
@@ -145,6 +153,7 @@ final class ProfileViewController: UIViewController {
             nameLabel.text = profile.name
             loginNameLabel.text = profile.loginName
             descriptionLabel.text = profile.bio
+            updateAvatar()
         } else {
             print("Профиль не загружен")
         }
@@ -155,9 +164,8 @@ final class ProfileViewController: UIViewController {
             print("Ошибка: avatarURL отсутствует или невалидный")
             return
         }
-        let processor = RoundCornerImageProcessor(cornerRadius: 61)
         print("Обновляем аватар: \(updateUrl.absoluteString)")
-        avatarImageView.kf.setImage(with: updateUrl, placeholder: UIImage(named: "PlaceholderAvatar"), options: [.processor(processor)])
+        avatarImageView.kf.setImage(with: updateUrl, placeholder: UIImage(named: "PlaceholderAvatar"))
     }
     
     private func addProfileImageObserver(){
