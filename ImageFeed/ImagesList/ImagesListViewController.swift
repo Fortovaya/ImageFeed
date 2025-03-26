@@ -23,16 +23,30 @@ final class ImagesListViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
+        
+        tableView.showsVerticalScrollIndicator = false
+        tableView.isOpaque = true
+        tableView.clearsContextBeforeDrawing = true
+        tableView.clipsToBounds = true
+        tableView.separatorStyle = .none
+        tableView.separatorInset = .zero
+        tableView.isEditing = false
+        tableView.allowsSelection = true
+        tableView.backgroundColor = .ypLightBlack
+       
+        
         tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
     //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.contentMode = .scaleToFill
+        view.backgroundColor = .ypLightBlack
         setupTableView()
     }
     
@@ -40,24 +54,7 @@ final class ImagesListViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
-        if segue.identifier == showSingleImageSegueIdentifier {
-            guard
-                let viewController = segue.destination as? SingleImageViewController,
-                let indexPath = sender as? IndexPath
-            else {
-                assertionFailure("Invalid segue destination")
-                return
-            }
             
-            let image = UIImage(named: photosName[indexPath.row])
-            viewController.image = image
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-    
     // MARK: - Private methods
     private func setupTableView(){
         view.addSubview(tableView)
@@ -129,4 +126,3 @@ extension ImagesListViewController: UITableViewDelegate {
         return cellHeight
     }
 }
-

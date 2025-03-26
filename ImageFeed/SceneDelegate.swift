@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         let splashViewController = SplashViewController() // Первый экран
-        let navigationController = CustomNavigationController(rootViewController: splashViewController) // Навигатор
+        let navigationController = UINavigationController(rootViewController: splashViewController) // Навигатор
         
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()

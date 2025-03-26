@@ -46,7 +46,7 @@ final class SingleImageViewController: UIViewController {
     }()
     
     private lazy var backButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "Backward"), for: .normal)
         button.tintColor = .white
         button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
@@ -59,7 +59,6 @@ final class SingleImageViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupBackButton()
         setupViewConstraints()
 
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(didDoubleTapImage))
@@ -74,18 +73,12 @@ final class SingleImageViewController: UIViewController {
     }
     
     // MARK: - Private Methods
-    private func setupBackButton(){
-        let backBarButtonItem = UIBarButtonItem(customView: backButton)
-        navigationItem.leftBarButtonItem = backBarButtonItem
-        navigationController?.interactivePopGestureRecognizer?.delegate = self
-    }
-    
     private func setupViewConstraints(){
         view.addSubview(scrollView)
         view.addSubview(shareButton)
         scrollView.addSubview(imageView)
+        view.addSubview(backButton)
         
-       
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -100,7 +93,12 @@ final class SingleImageViewController: UIViewController {
             shareButton.widthAnchor.constraint(equalToConstant: 50),
             shareButton.heightAnchor.constraint(equalToConstant: 50),
             shareButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            shareButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            shareButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            backButton.widthAnchor.constraint(equalToConstant: 44),
+            backButton.heightAnchor.constraint(equalToConstant: 44),
+            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 9),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 11)
         ])
     }
             
@@ -138,7 +136,7 @@ final class SingleImageViewController: UIViewController {
     // MARK: - IBAction
     @objc
     private func didTapBackButton() {
-        dismiss(animated: true, completion: nil)
+        navigationController?.popViewController(animated: true)
     }
     
     

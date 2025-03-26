@@ -90,11 +90,9 @@ class AuthViewController: UIViewController {
     
     //MARK: - Action
     @objc private func didTapActiveButton(){
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let webViewVC = storyboard.instantiateViewController(withIdentifier: idWebVC) as? WebViewViewController {
-            webViewVC.delegate = self
-            navigationController?.pushViewController(webViewVC, animated: true)
-        }
+        let webViewVC = WebViewViewController()
+        webViewVC.delegate = self
+        navigationController?.pushViewController(webViewVC, animated: true)
     }
 }
 

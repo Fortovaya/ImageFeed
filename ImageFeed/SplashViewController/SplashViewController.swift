@@ -17,8 +17,6 @@ final class SplashViewController: UIViewController {
     }()
     
     //MARK: - Private properties
-    private let idAuthViewController = "showAuthVCID"
-    private let idTabBarControllerScene = "TabBarViewController"
     private let profileService = ProfileService.shared
     private let storage = OAuth2TokenStorage.storage
     
@@ -59,7 +57,6 @@ final class SplashViewController: UIViewController {
     }
     
     private func validateAuthorization(){
-        //        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if OAuth2TokenStorage.storage.token != nil {
             print("Токен прошел авторизацию")
             switchToTabBarController()
@@ -71,16 +68,15 @@ final class SplashViewController: UIViewController {
         }
     }
     
-    
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
             return
         }
         
-        let tabBarController = TabBarController() // Создаём по коду
-        print("Переход на \(TabBarController.identifier)") // Лог для наглядности
-        
+        let tabBarController = TabBarController()
+        print("Переход на \(TabBarController.identifier)")
+
         window.rootViewController = tabBarController
     }
     

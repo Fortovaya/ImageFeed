@@ -8,7 +8,7 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-    static let identifier = "TabBarViewController" // Используем как идентификатор
+    static let identifier = "TabBarViewController"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +25,8 @@ final class TabBarController: UITabBarController {
         viewControllers = [imagesNavVC, profileNavVC]
         
         setupTabBarController()
+        setupNavigationBar(for: imagesNavVC)
+        setupNavigationBar(for: profileNavVC)
     }
     
     private func setupTabBarController(){
@@ -33,5 +35,12 @@ final class TabBarController: UITabBarController {
         tabBar.tintColor = .ypWhite
         tabBar.unselectedItemTintColor = .ypDarkGray
         view.backgroundColor = .ypLightBlack
+        navigationController?.navigationBar.barTintColor = .ypLightBlack
+        navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.isTranslucent = false
+    }
+    
+    private func setupNavigationBar(for navigationController: UINavigationController) {
+        navigationController.navigationBar.isHidden = true
     }
 }
