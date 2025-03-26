@@ -92,9 +92,10 @@ class AuthViewController: UIViewController {
     @objc private func didTapActiveButton(){
         let webViewVC = WebViewViewController()
         webViewVC.delegate = self
-        webViewVC.modalPresentationStyle = .fullScreen
-        //        navigationController?.pushViewController(webViewVC, animated: true)
-        present(webViewVC, animated: true, completion: nil)
+    
+        let navigationController = UINavigationController(rootViewController: webViewVC)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true, completion: nil)
     }
 }
 

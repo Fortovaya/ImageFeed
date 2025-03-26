@@ -36,7 +36,6 @@ final class TabBarController: UITabBarController {
         tabBar.unselectedItemTintColor = .ypDarkGray
         view.backgroundColor = .ypLightBlack
         navigationController?.navigationBar.barTintColor = .ypLightBlack
-        navigationController?.navigationBar.isHidden = true
         navigationController?.navigationBar.isTranslucent = false
     }
     

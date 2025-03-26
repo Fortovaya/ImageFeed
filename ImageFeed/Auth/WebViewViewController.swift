@@ -34,6 +34,13 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         return progressView
     }()
     
+    private lazy var backAuthVCButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "navBackButton"), for: .normal)
+        button.addTarget(self, action: #selector(didTapBackAuthVCButton), for: .touchUpInside)
+        return button
+    }()
+    
     private var estimatedProgressObservation: NSKeyValueObservation?
     
     //MARK: - Life cycle
@@ -43,6 +50,9 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         configureWebView()
         loadAuthView()
         configureProgressView()
+        
+        let backButton = UIBarButtonItem(customView: backAuthVCButton)
+        navigationItem.leftBarButtonItem = backButton
         
         addEstimatedProgressObservation()
         webView.navigationDelegate = self
@@ -76,7 +86,7 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
             webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     
@@ -119,6 +129,11 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
                  self.updateProgress()
              }
         )
+    }
+    
+    @objc
+    private func didTapBackAuthVCButton(){
+        delegate?.webViewViewControllerDidCancel(self)
     }
 }
 
