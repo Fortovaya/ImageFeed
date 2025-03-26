@@ -92,7 +92,9 @@ class AuthViewController: UIViewController {
     @objc private func didTapActiveButton(){
         let webViewVC = WebViewViewController()
         webViewVC.delegate = self
-        navigationController?.pushViewController(webViewVC, animated: true)
+        webViewVC.modalPresentationStyle = .fullScreen
+        //        navigationController?.pushViewController(webViewVC, animated: true)
+        present(webViewVC, animated: true, completion: nil)
     }
 }
 
@@ -105,7 +107,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         
         oauth2Service.fetchOAuthToken(code: code) { [weak self] result in
             guard let self = self else { return }
- 
+            
             switch result {
             case .success(let token):
                 OAuth2TokenStorage.storage.token = token

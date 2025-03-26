@@ -74,7 +74,7 @@ final class ProfileService {
             return
         }
         
-        isFetching = true // Устанавливаем флаг в true, чтобы блокировать другие запросы
+        isFetching = true
         
         guard let token = oAuth2TokenStorage.token else {
             print("Ошибка: Токен отсутствует")
@@ -90,7 +90,7 @@ final class ProfileService {
         case .success(let request):
             let task = urlSession.objectTask(for: request){ [weak self] (result: Result<ProfileResult, Error>) in
                 guard let self = self else { return }
-                self.isFetching = false // Сбрасываем флаг после завершения запроса
+                self.isFetching = false
                 
                 DispatchQueue.main.async {
                     switch result {

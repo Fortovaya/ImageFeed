@@ -12,7 +12,6 @@ final class ImagesListViewController: UIViewController {
     //MARK: - Private variables
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private let currentDate = Date()
-    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -35,7 +34,6 @@ final class ImagesListViewController: UIViewController {
         tableView.isEditing = false
         tableView.allowsSelection = true
         tableView.backgroundColor = .ypLightBlack
-       
         
         tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -54,7 +52,7 @@ final class ImagesListViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-            
+    
     // MARK: - Private methods
     private func setupTableView(){
         view.addSubview(tableView)

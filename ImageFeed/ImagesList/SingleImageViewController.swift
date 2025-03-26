@@ -53,14 +53,14 @@ final class SingleImageViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-
+    
     private var initialZoomScale: CGFloat = 1.0
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewConstraints()
-
+        
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(didDoubleTapImage))
         doubleTapGesture.numberOfTapsRequired = 2
         imageView.addGestureRecognizer(doubleTapGesture)
@@ -101,7 +101,7 @@ final class SingleImageViewController: UIViewController {
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 11)
         ])
     }
-            
+    
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let visibleRectSize = scrollView.bounds.size
         let imageSize = image.size
@@ -109,7 +109,10 @@ final class SingleImageViewController: UIViewController {
         let vScale = visibleRectSize.height / imageSize.height
         let scale = min(hScale, vScale)
         
-        scrollView.setZoomScale(scale, animated: false)
+        if scale > 0 {
+            scrollView.setZoomScale(scale, animated: false)
+        }
+        
         scrollView.layoutIfNeeded()
         centerImageIfNeeded()
     }
@@ -133,7 +136,6 @@ final class SingleImageViewController: UIViewController {
         centerImageIfNeeded()
     }
     
-    // MARK: - IBAction
     @objc
     private func didTapBackButton() {
         navigationController?.popViewController(animated: true)
@@ -168,7 +170,7 @@ extension SingleImageViewController: UIScrollViewDelegate {
 }
 
 extension SingleImageViewController: UIGestureRecognizerDelegate {
-      func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-          return navigationController?.viewControllers.count ?? 0 > 1
-      }
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return navigationController?.viewControllers.count ?? 0 > 1
+    }
 }

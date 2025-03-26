@@ -76,7 +76,7 @@ final class SplashViewController: UIViewController {
         
         let tabBarController = TabBarController()
         print("Переход на \(TabBarController.identifier)")
-
+        
         window.rootViewController = tabBarController
     }
     

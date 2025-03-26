@@ -58,7 +58,7 @@ final class ProfileImageService {
             return
         }
         
-        isFetching = true // Устанавливаем флаг в true, чтобы блокировать другие запросы
+        isFetching = true
         
         guard let token = oAuth2TokenStorage.token else {
             print("Ошибка: Токен отсутствует")
@@ -76,7 +76,7 @@ final class ProfileImageService {
         case .success(let request):
             let task = urlSession.objectTask(for: request){ [weak self] (result: Result<UserResult, Error>) in
                 guard let self = self else { return }
-                self.isFetching = false // Сбрасываем флаг после завершения запроса
+                self.isFetching = false
                 
                 DispatchQueue.main.async {
                     print("JSON response: \(String(describing: result))")
@@ -85,7 +85,7 @@ final class ProfileImageService {
                         print("Успешный ответ от API: \(userResult)")
                         
                         print("JSON profileImage: \(String(describing: userResult.profileImage))")
-
+                        
                         guard let profileImageURL = userResult.profileImage?.small else {
                             print("Ошибка: profileImage отсутствует в ответе API")
                             completion(.failure(.invalidResponseData))
@@ -116,3 +116,6 @@ final class ProfileImageService {
         }
     }
 }
+
+
+

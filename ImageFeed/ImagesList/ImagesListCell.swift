@@ -40,7 +40,7 @@ final class ImagesListCell: UITableViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
+    
     // MARK: - Static properties
     static let reuseIdentifier = "ImagesListCell"
     
@@ -64,7 +64,7 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: - Private methods
     private func setupCell(){
-        contentView.clipsToBounds = true 
+        contentView.clipsToBounds = true
         contentView.addSubview(cellImage)
         contentView.addSubview(likeButton)
         contentView.addSubview(dateLabel)
@@ -79,7 +79,7 @@ final class ImagesListCell: UITableViewCell {
             likeButton.widthAnchor.constraint(equalToConstant: 44),
             likeButton.topAnchor.constraint(equalTo: cellImage.topAnchor, constant: 8),
             likeButton.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor, constant: -8),
-                        
+            
             dateLabel.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor, constant: 8),
             dateLabel.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor, constant: -8),
             dateLabel.trailingAnchor.constraint(lessThanOrEqualTo: cellImage.trailingAnchor, constant: -8)
@@ -113,7 +113,7 @@ final class ImagesListCell: UITableViewCell {
         borderLayer.lineWidth = 0.9
         borderLayer.strokeColor = UIColor.ypWhite.cgColor
         borderLayer.fillColor = UIColor.clear.cgColor
-
+        
         gradientLayer.sublayers?.removeAll(where: { $0 is CAShapeLayer })
         gradientLayer.addSublayer(borderLayer)
     }
