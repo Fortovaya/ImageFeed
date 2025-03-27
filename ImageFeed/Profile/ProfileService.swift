@@ -7,39 +7,6 @@
 
 import Foundation
 
-//MARK: - Struct
-struct ProfileResult: Codable {
-    let username: String
-    let firstName: String
-    let lastName: String
-    let bio: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case username
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case bio = "bio"
-    }
-}
-
-struct Profile {
-    let userName: String
-    let firstName: String
-    let lastName: String
-    let name: String
-    let loginName: String
-    let bio: String?
-    
-    init(from profileResult: ProfileResult) {
-        self.userName = profileResult.username
-        self.firstName = profileResult.firstName
-        self.lastName = profileResult.lastName
-        self.name = "\(profileResult.firstName) \(profileResult.lastName)"
-        self.loginName = "@\(profileResult.username)"
-        self.bio = profileResult.bio
-    }
-}
-
 final class ProfileService {
     
     //MARK: - Private variables
@@ -56,7 +23,7 @@ final class ProfileService {
     //MARK: - Private Method
     func makeProfileRequest(token: String) -> Result<URLRequest, OAuthTokenRequestError> {
         
-        guard let url = URL(string: "https://api.unsplash.com/me") else {
+        guard let url = URL(string: "me", relativeTo: Constants.defaultBaseURL) else {
             print("Ошибка: Неверный URL ProfileRequest")
             return.failure(.invalidBaseURL)
         }

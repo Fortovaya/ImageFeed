@@ -8,21 +8,8 @@
 import Foundation
 import Kingfisher
 
-struct UserResult: Codable {
-    let profileImage: ProfileImage?
-    
-    enum CodingKeys: String, CodingKey {
-        case profileImage = "profile_image"
-    }
-    
-    struct ProfileImage: Codable {
-        let small: String
-        let medium: String
-        let large: String
-    }
-}
-
 final class ProfileImageService {
+    
     //MARK: - Static variables
     static let shared = ProfileImageService()
     private init(){}
@@ -38,13 +25,11 @@ final class ProfileImageService {
     
     //MARK: - Private Method
     func makeProfileImageRequest(username: String, token: String) -> Result<URLRequest, OAuthTokenRequestError> {
-        let urlString = "https://api.unsplash.com/users/\(username)"
-        
-        guard let url = URL(string: urlString) else {
-            print("Ошибка: Неверный URL ProfileRequest")
+        guard let url = URL(string: "users/\(username)", relativeTo: Constants.defaultBaseURL) else {
+            print("Ошибка: Неверный URL ProfileImageRequest")
             return.failure(.invalidBaseURL)
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
