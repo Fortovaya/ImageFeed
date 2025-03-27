@@ -101,11 +101,14 @@ extension URLSession {
                     if let responseString = String(data: data, encoding: .utf8) {
                         print("Ошибка: статус код \(statusCode), тело ответа: \(responseString)")
                     }
+                    print("Ошибка: статус код \(statusCode)")
                     fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
                 }
             } else if let error = error {
+                print("Ошибка URL запроса: \(error.localizedDescription)")
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
             } else {
+                print("Ошибка: неизвестная ошибка URLSession")
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
             }
         })
