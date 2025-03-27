@@ -6,11 +6,6 @@
 //
 
 import UIKit
-import ProgressHUD
-
-protocol AuthViewControllerDelegate: AnyObject {
-    func didAuthenticate(_ vc: AuthViewController)
-}
 
 class AuthViewController: UIViewController {
     //MARK: - Delegate
@@ -42,8 +37,8 @@ class AuthViewController: UIViewController {
     
     //MARK: - Private properties
     private let oauth2Service = OAuth2Service.shared
-    private let idWebVC = "WebViewViewControllerID"
-    private let errorAlert = AlertPresenter.notificationsAlert
+    private lazy var errorAlert = AlertPresenter(viewController: self)
+    
     
     //MARK: - Life cycle
     override func viewDidLoad() {
@@ -92,7 +87,7 @@ class AuthViewController: UIViewController {
     @objc private func didTapActiveButton(){
         let webViewVC = WebViewViewController()
         webViewVC.delegate = self
-    
+        
         let navigationController = UINavigationController(rootViewController: webViewVC)
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
@@ -115,7 +110,11 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 self.delegate?.didAuthenticate(self)
             case .failure(let error):
                 print("Ошибка получения токена: \(error)")
-                errorAlert.showAlert(on: self, title: "Что-то пошло не так", message: "Не удалось войти в систему")
+                let alertModel = AlertModel(title: "Что-то пошло не так(",
+                                            message: "Не удалось войти в систему",
+                                            buttonText: "OK",
+                                            completion: nil)
+                errorAlert.showAlert(with: alertModel)
             }
             UIBlockingProgressHUD.dismiss()
         }

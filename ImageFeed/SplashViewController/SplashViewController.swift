@@ -19,6 +19,7 @@ final class SplashViewController: UIViewController {
     //MARK: - Private properties
     private let profileService = ProfileService.shared
     private let storage = OAuth2TokenStorage.storage
+    private lazy var showErrorAlert = AlertPresenter(viewController: self)
     
     //MARK: - Life cycle
     override func viewDidLoad() {
@@ -96,16 +97,13 @@ final class SplashViewController: UIViewController {
                 self.switchToTabBarController()
             case .failure(let error):
                 print("Ошибка при загрузке профиля: \(error)")
-                self.showErrorAlert(error)
+                let alertModel = AlertModel(title: "Ошибка",
+                                            message: "Не удалось загрузить профиль: \(error.localizedDescription)",
+                                            buttonText: "OK",
+                                            completion: nil)
+                showErrorAlert.showAlert(with: alertModel)
             }
         }
-    }
-    
-    
-    private func showErrorAlert(_ error: Error) {
-        let alert = UIAlertController(title: "Ошибка", message: "Не удалось загрузить профиль: \(error.localizedDescription)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "ОК", style: .default))
-        self.present(alert, animated: true, completion: nil)
     }
 }
 
