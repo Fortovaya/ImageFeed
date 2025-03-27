@@ -90,12 +90,11 @@ extension ImagesListViewController {
             return
         }
         
-        cell.cellImage.image = image
-        cell.dateLabel.text = dateFormatter.string(from: currentDate)
-        
         let isLiked = indexPath.row % 2 == 0
         let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
-        cell.likeButton.setImage(likeImage, for: .normal)
+        let dateText = dateFormatter.string(from: currentDate)
+        
+        cell.configureCellWithImage(image: image, likeButtonImage: likeImage, date: dateText)
     }
 }
 

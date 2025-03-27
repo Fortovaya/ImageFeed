@@ -10,7 +10,7 @@ import UIKit
 final class ImagesListCell: UITableViewCell {
     
     // MARK: - Private properties
-    let cellImage: UIImageView = {
+    private lazy var cellImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 16
@@ -19,13 +19,13 @@ final class ImagesListCell: UITableViewCell {
         return imageView
     }()
     
-    let likeButton: UIButton = {
+    private lazy var likeButton: UIButton = {
         let likeButton = UIButton()
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         return likeButton
     }()
     
-    let dateLabel: UILabel = {
+    private lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .ypWhite
@@ -33,20 +33,11 @@ final class ImagesListCell: UITableViewCell {
         return label
     }()
     
-    let gradientLayer = CAGradientLayer()
-    
-    private let gradientView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     // MARK: - Static properties
     static let reuseIdentifier = "ImagesListCell"
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        updateGradientFrame()
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -87,34 +78,11 @@ final class ImagesListCell: UITableViewCell {
         ])
         
         contentView.backgroundColor = .ypLightBlack
-        addGradientBackground()
     }
     
-    private func addGradientBackground() {
-        gradientLayer.colors = [
-            UIColor.ypWhite.withAlphaComponent(0.2).cgColor,
-            UIColor.ypDarkGray.withAlphaComponent(0.4).cgColor
-        ]
-        
-        gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-        gradientLayer.cornerRadius = 6
-        
-        dateLabel.layer.insertSublayer(gradientLayer, at: 0)
-        updateGradientFrame()
-    }
-    
-    private func updateGradientFrame() {
-        gradientLayer.frame = dateLabel.bounds.insetBy(dx: -4, dy: -1)
-        
-        let borderLayer = CAShapeLayer()
-        borderLayer.path = UIBezierPath(roundedRect: gradientLayer.bounds, cornerRadius: 6).cgPath
-        borderLayer.lineWidth = 0.9
-        borderLayer.strokeColor = UIColor.ypWhite.cgColor
-        borderLayer.fillColor = UIColor.clear.cgColor
-        
-        gradientLayer.sublayers?.removeAll(where: { $0 is CAShapeLayer })
-        gradientLayer.addSublayer(borderLayer)
+   func configureCellWithImage(image: UIImage, likeButtonImage: UIImage?, date: String) {
+        cellImage.image = image
+        likeButton.setImage(likeButtonImage, for: .normal)
+        dateLabel.text = date
     }
 }
