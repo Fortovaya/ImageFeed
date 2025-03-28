@@ -82,6 +82,13 @@ extension ImagesListViewController: UITableViewDataSource {
         configCell(for: cell, with: indexPath)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // TO DO: sprint_12
+        //        if indexPath.row + 1 == photos.count {
+        //            fetchPhotosNextPage()
+        //        } else { return }
+    }
 }
 
 extension ImagesListViewController {
