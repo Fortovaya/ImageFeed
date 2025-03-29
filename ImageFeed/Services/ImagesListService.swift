@@ -21,75 +21,91 @@ final class ImagesListService {
     private var task: URLSessionTask?
     
     static let shared = ImagesListService()
-    private init(){}
+    //    private init(){}
     
-    private func makePhotosNextPage() -> URLRequest{
+    func makePhotosNextPage(token: String) -> Result<URLRequest, OAuthTokenRequestError>{
         let nextPage = (lastLoadedPage ?? 0) + 1
-        self.lastLoadedPage = nextPage
+        //        self.lastLoadedPage = nextPage
+        guard let baseURL = Constants.defaultBaseURL else {
+            print("Ошибка: baseURL отсутствует")
+            return .failure(.invalidRequest)
+        }
         
-        guard let url = Constants.defaultBaseURL?.appendingPathComponent("photos?page=\(nextPage)") else {
+        let photosPath = baseURL.appendingPathComponent("photos")
+        
+        var urlComponents = URLComponents(url: photosPath, resolvingAgainstBaseURL: true)
+        urlComponents?.queryItems = [URLQueryItem(name: "page", value: "\(nextPage)")]
+        
+        guard let url = urlComponents?.url else {
             print("Ошибка: Неверный URL PhotosNextPage")
-            preconditionFailure("Невозможно сформировать URL запроса")
+            return .failure(.invalidRequest)
         }
         
         var request = URLRequest(url: url)
-        
-        guard let token = oAuth2TokenStorage.token else {
-            print("Ошибка: Токен отсутствует")
-            preconditionFailure("Токен отсутствует")
-        }
-        
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
+        
+        return .success(request)
     }
     
     // функция скачивания страницы
-    private func fetchPhotosNextPage(completion: @escaping (Result<String, NetworkError>)-> Void) {
+    func fetchPhotosNextPage(completion: ((Result<[Photo], Error>) -> Void)? = nil){
         assert(Thread.isMainThread)
         
-        let request = makePhotosNextPage()
+        let nextPage = (lastLoadedPage ?? 0) + 1
+        
         guard !isFetching else {
             print("Запрос уже выполняется")
             return
         }
         
+        isFetching = true
+        
         guard let token = oAuth2TokenStorage.token else {
             print("Ошибка: Токен отсутствует")
-            completion(.failure(.missingToken))
             isFetching = false
             return
         }
         
-        self.task = URLSession.shared.objectTask(for: request){ [weak self ] (result:Result<[PhotoResult], Error>) in
-            guard let self = self else { return }
+        print("Запрос на загрузку следующей страницы с токеном \(token)")
+        
+        switch makePhotosNextPage(token: token){
+        case .failure(let error):
+            print("Ошибка создания запроса makeProfileRequest: \(error)")
+            isFetching = false
+            completion?(.failure(error))
             
-            switch result {
-            case .success(let photoResult):
-                photoResult.forEach{ photo in
-                    let newPhoto = Photo(
-                        id: photo.id,
-                        size: CGSize(width: photo.width, height: photo.height),
-                        createdAt: photo.createdAt,
-                        welcomeDescription: photo.description,
-                        thumbImageURL: photo.urls.thumb,
-                        largeImageURL: photo.urls.full,
-                        isLiked: photo.likedByUser
-                    )
-                    self.photos.append(newPhoto)
+        case .success(let request):
+            let task = urlSession.objectTask(for: request){ [weak self ] (result: Result<[PhotoResult], Error>) in
+                guard let self = self else { return }
+                self.isFetching = false
+                
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let photoResult):
+                        print("Загружено \(photoResult.count) фотографий")
+                        let newPhotos = photoResult.map { Photo(from: $0) }
+                        self.photos.append(contentsOf: newPhotos)
+                        //                        self.lastLoadedPage = (self.lastLoadedPage ?? 0) + 1
+                        self.lastLoadedPage = nextPage
+                        
+                        print("✅ Фотографии загружены, отправляем уведомление")
+                        self.sentNotification()
+                        
+                        completion?(.success(newPhotos))
+                        
+                    case .failure(let error):
+                        print("Ошибка при загрузке фотографий: \(error)")
+                        completion?(.failure(error))
+                    }
                 }
-                let nextPage = (lastLoadedPage ?? 0) + 1
-                self.lastLoadedPage = nextPage
-                
-                NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
-                
-            case .failure(let error):
-                print("Error in ImageListService(fetchPhotosNextPage) : \(error)")
-                completion(.failure(.requestFailed))
             }
-            
-            task = nil
+            self.task = task
+            task.resume()
         }
-        self.task?.resume()
+    }
+    
+    func sentNotification() {
+        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
     }
 }
