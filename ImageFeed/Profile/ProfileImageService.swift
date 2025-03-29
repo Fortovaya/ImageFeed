@@ -29,7 +29,7 @@ final class ProfileImageService {
             print("Ошибка: Неверный URL ProfileImageRequest")
             return.failure(.invalidBaseURL)
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
