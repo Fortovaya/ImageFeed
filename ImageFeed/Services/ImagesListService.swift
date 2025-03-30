@@ -34,7 +34,11 @@ final class ImagesListService: ImagesListServiceProtocol {
         let photosPath = baseURL.appendingPathComponent("photos")
         
         var urlComponents = URLComponents(url: photosPath, resolvingAgainstBaseURL: true)
-        urlComponents?.queryItems = [URLQueryItem(name: "page", value: "\(nextPage)")]
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "page", value: "\(nextPage)"),
+            URLQueryItem(name: "per_page", value: "10")
+            
+        ]
         
         guard let url = urlComponents?.url else {
             print("Ошибка: Неверный URL PhotosNextPage")
@@ -48,24 +52,20 @@ final class ImagesListService: ImagesListServiceProtocol {
         return .success(request)
     }
     
-    // функция скачивания страницы
     func fetchPhotosNextPage(completion: ((Result<[Photo], Error>) -> Void)? = nil){
         assert(Thread.isMainThread)
+        guard !isFetching else { return }
+        isFetching = true
         
         let nextPage = (lastLoadedPage ?? 0) + 1
-        
-        guard !isFetching else {
-            print("Запрос уже выполняется")
-            return
-        }
-        
-        isFetching = true
         
         guard let token = oAuth2TokenStorage.token else {
             print("Ошибка: Токен отсутствует")
             isFetching = false
             return
         }
+        
+        task?.cancel()
         
         print("Запрос на загрузку следующей страницы с токеном \(token)")
         
@@ -80,25 +80,30 @@ final class ImagesListService: ImagesListServiceProtocol {
                 guard let self = self else { return }
                 self.isFetching = false
                 
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let photoResult):
-                        print("Загружено \(photoResult.count) фотографий")
-                        let newPhotos = photoResult.map { Photo(from: $0) }
-                        self.photos.append(contentsOf: newPhotos)
-                        //                        self.lastLoadedPage = (self.lastLoadedPage ?? 0) + 1
-                        self.lastLoadedPage = nextPage
-                        
+                
+                switch result {
+                case .success(let photoResult):
+                    print("Загружено \(photoResult.count) фотографий")
+                    let newPhotos = photoResult.map { Photo(from: $0) }
+                    
+                    let uniquePhotos = newPhotos.filter { newPhoto in
+                        !self.photos.contains { $0.id == newPhoto.id }
+                    }
+                    
+                    self.photos.append(contentsOf: uniquePhotos)
+                    self.lastLoadedPage = nextPage
+                    
+                    DispatchQueue.main.async {
                         print("✅ Фотографии загружены, отправляем уведомление")
                         self.sentNotification()
-                        
-                                                completion?(.success(newPhotos))
- 
-                    case .failure(let error):
-                        print("Ошибка при загрузке фотографий: \(error)")
-                        completion?(.failure(error))
+                        completion?(.success(uniquePhotos))
                     }
+                    
+                case .failure(let error):
+                    print("Ошибка при загрузке фотографий: \(error)")
+                    completion?(.failure(error))
                 }
+                
             }
             self.task = task
             task.resume()
