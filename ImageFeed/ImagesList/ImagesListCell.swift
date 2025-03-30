@@ -111,15 +111,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     private func loadImage(from url: URL) {
         let resource = KF.ImageResource(downloadURL: url, cacheKey: url.absoluteString)
         cellImage.kf.setImage(with: resource, placeholder: UIImage(named: "placeholder"))
-//        options: [.transition(.fade(0.3))]) { result in
-//            switch result {
-//            case .success(let value):
-//                print("Изображение успешно загружено из \(value.cacheType)")
-//            case .failure(let error):
-//                print("Ошибка загрузки изображения: \(error)")
-//            }
-//        }
-                              
+        print("Плейсхолдер должен отображаться до загрузки изображения.")
         cellImage.kf.indicatorType = .activity
     }
 }

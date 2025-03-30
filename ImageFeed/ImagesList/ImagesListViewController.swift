@@ -57,7 +57,7 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
             case .success:
                 self.updateTableViewAnimated()
             case .failure(let error):
-                print("Ошибка при загрузке фотографий: \(error)")
+                print("❌ Ошибка при загрузке фотографий: \(error)")
             }
         }
     }
@@ -148,7 +148,7 @@ extension ImagesListViewController: UITableViewDataSource {
                 case .success(_):
                     self.updateTableViewAnimated()
                 case .failure(let error):
-                    print("Ошибка при загрузке следующих фотографий: \(error)")
+                    print("❌ Ошибка при загрузке следующих фотографий: \(error)")
                 }
             }
         }
@@ -158,13 +158,13 @@ extension ImagesListViewController: UITableViewDataSource {
 extension ImagesListViewController {
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         guard indexPath.row < photos.count else {
-            print("Ошибка: indexPath.row (\(indexPath.row)) выходит за границы массива photos.count (\(photos.count))")
+            print("❌ Ошибка: indexPath.row (\(indexPath.row)) выходит за границы массива photos.count (\(photos.count))")
             return
         }
         let photo = photos[indexPath.row]
         
         guard let url = URL(string: photo.thumbImageURL) else {
-            print("Ошибка: неверный URL - \(photo.thumbImageURL)")
+            print("❌ Ошибка: неверный URL - \(photo.thumbImageURL)")
             return
         }
             

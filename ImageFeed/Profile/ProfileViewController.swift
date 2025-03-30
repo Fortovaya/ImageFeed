@@ -161,7 +161,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateAvatar(){
         guard let profileImageURL = ProfileImageService.shared.avatarURL, let updateUrl = URL(string: profileImageURL) else {
-            print("Ошибка: avatarURL отсутствует или невалидный")
+            print("❌ Ошибка: avatarURL отсутствует или невалидный")
             return
         }
         print("Обновляем аватар: \(updateUrl.absoluteString)")

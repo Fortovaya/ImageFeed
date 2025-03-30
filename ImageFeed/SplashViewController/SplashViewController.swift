@@ -96,7 +96,7 @@ final class SplashViewController: UIViewController {
                 }
                 self.switchToTabBarController()
             case .failure(let error):
-                print("Ошибка при загрузке профиля: \(error)")
+                print("❌ Ошибка при загрузке профиля: \(error)")
                 let alertModel = AlertModel(title: "Ошибка",
                                             message: "Не удалось загрузить профиль: \(error.localizedDescription)",
                                             buttonText: "OK",

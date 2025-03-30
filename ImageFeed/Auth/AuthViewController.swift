@@ -109,7 +109,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 OAuth2TokenStorage.storage.token = token
                 self.delegate?.didAuthenticate(self)
             case .failure(let error):
-                print("Ошибка получения токена: \(error)")
+                print("❌ Ошибка получения токена: \(error)")
                 let alertModel = AlertModel(title: "Что-то пошло не так(",
                                             message: "Не удалось войти в систему",
                                             buttonText: "OK",

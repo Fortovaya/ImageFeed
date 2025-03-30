@@ -9,11 +9,9 @@ import UIKit
 
 final class ImagesListService: ImagesListServiceProtocol {
     
-    //список скачанных фото
     private(set) var photos: [Photo] = []
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
-    //номер последней скачанной страницы
     private var lastLoadedPage: Int?
     private var isFetching = false
     private let oAuth2TokenStorage = OAuth2TokenStorage.storage
@@ -25,9 +23,8 @@ final class ImagesListService: ImagesListServiceProtocol {
     
     func makePhotosNextPage(token: String) -> Result<URLRequest, OAuthTokenRequestError>{
         let nextPage = (lastLoadedPage ?? 0) + 1
-        //        self.lastLoadedPage = nextPage
         guard let baseURL = Constants.defaultBaseURL else {
-            print("Ошибка: baseURL отсутствует")
+            print("❌ Ошибка: baseURL отсутствует")
             return .failure(.invalidRequest)
         }
         
@@ -41,7 +38,7 @@ final class ImagesListService: ImagesListServiceProtocol {
         ]
         
         guard let url = urlComponents?.url else {
-            print("Ошибка: Неверный URL PhotosNextPage")
+            print("❌ Ошибка: Неверный URL PhotosNextPage")
             return .failure(.invalidRequest)
         }
         
@@ -54,13 +51,14 @@ final class ImagesListService: ImagesListServiceProtocol {
     
     func fetchPhotosNextPage(completion: ((Result<[Photo], Error>) -> Void)? = nil){
         assert(Thread.isMainThread)
+        
         guard !isFetching else { return }
         isFetching = true
         
         let nextPage = (lastLoadedPage ?? 0) + 1
         
         guard let token = oAuth2TokenStorage.token else {
-            print("Ошибка: Токен отсутствует")
+            print("❌ Ошибка: Токен отсутствует")
             isFetching = false
             return
         }
@@ -71,7 +69,7 @@ final class ImagesListService: ImagesListServiceProtocol {
         
         switch makePhotosNextPage(token: token){
         case .failure(let error):
-            print("Ошибка создания запроса makeProfileRequest: \(error)")
+            print("❌ Ошибка создания запроса makeProfileRequest: \(error)")
             isFetching = false
             completion?(.failure(error))
             
@@ -100,7 +98,7 @@ final class ImagesListService: ImagesListServiceProtocol {
                     }
                     
                 case .failure(let error):
-                    print("Ошибка при загрузке фотографий: \(error)")
+                    print("❌ Ошибка при загрузке фотографий: \(error)")
                     completion?(.failure(error))
                 }
                 
