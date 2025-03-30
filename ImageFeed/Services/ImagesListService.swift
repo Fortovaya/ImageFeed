@@ -21,7 +21,7 @@ final class ImagesListService {
     private var task: URLSessionTask?
     
     static let shared = ImagesListService()
-    //    private init(){}
+    private init(){}
     
     func makePhotosNextPage(token: String) -> Result<URLRequest, OAuthTokenRequestError>{
         let nextPage = (lastLoadedPage ?? 0) + 1

@@ -12,7 +12,8 @@ final class ImagesListViewController: UIViewController {
     //MARK: - Private variables
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private let currentDate = Date()
-    
+    private let imagesListService = ImagesListService.shared
+ 
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -66,6 +67,24 @@ final class ImagesListViewController: UIViewController {
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
+    
+    func updateCellHeight(at indexPath: IndexPath) {
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    
+    func updateTableViewAnimated() {
+        let oldCount = imagesListService.photos.count
+        let newCount = imagesListService.photos.count
+//        photos = imagesListService.photos
+        if oldCount != newCount {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { i in
+                    IndexPath(row: i, section: 0)
+                }
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            } completion: { _ in }
+        }
+    }
 }
 
 //MARK: - Extension
@@ -109,6 +128,9 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Обновляем высоту выбранной ячейки
+        updateCellHeight(at: indexPath)
         
         let singleImageVC = SingleImageViewController()
         singleImageVC.image = UIImage(named: photosName[indexPath.row])

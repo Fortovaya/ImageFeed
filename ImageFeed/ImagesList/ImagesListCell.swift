@@ -40,6 +40,17 @@ final class ImagesListCell: UITableViewCell {
         super.layoutSubviews()
     }
     
+    override func prepareForReuse(){
+        super.prepareForReuse()
+        
+        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
+        cellImage.kf.cancelDownloadTask()
+        cellImage.image = nil
+//        likeButton.setImage(likeButtonImage, for: .normal)
+//        dateLabel.text = date
+        
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCell()
@@ -85,4 +96,36 @@ final class ImagesListCell: UITableViewCell {
         likeButton.setImage(likeButtonImage, for: .normal)
         dateLabel.text = date
     }
+
 }
+
+/*
+ 
+ передача картинки в ячейку через Kingfisher
+ 
+ cellImage.kf.setImage(with: url) { result in
+ // `result` is either a `.success(RetrieveImageResult)` or a `.failure(KingfisherError)`
+ switch result {
+ case .success(let value):
+ // The image was set to image view:
+ print(value.image)
+ 
+ // From where the image was retrieved:
+ // - .none - Just downloaded.
+ // - .memory - Got from memory cache.
+ // - .disk - Got from disk cache.
+ print(value.cacheType)
+ 
+ // The source object which contains information like `url`.
+ print(value.source)
+ 
+ case .failure(let error):
+ print(error) // The error happens
+ }
+ }
+ 
+ 
+ Добавление строк с анимацией осуществляется методом tableView.insertRows(at:, with:), удаление — tableView.deleteRows(at:, with:).
+ Как раз последний вариант и применим; остановимся на нём подробнее.
+ 
+ */

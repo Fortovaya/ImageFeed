@@ -7,7 +7,7 @@
 
 protocol ImagesListServiceProtocol {
     
-//    func fetchPhotosNextPage(completion: @escaping (Result<[], ImagesListServiceError>)) -> Void {
-//
-//    }
+    func fetchPhotosNextPage(completion: ((Result<[Photo], Error>) -> Void)?)
+    
+    
 }
