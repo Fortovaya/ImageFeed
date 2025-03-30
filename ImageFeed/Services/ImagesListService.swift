@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ImagesListService {
+final class ImagesListService: ImagesListServiceProtocol {
     
     //список скачанных фото
     private(set) var photos: [Photo] = []
@@ -92,8 +92,8 @@ final class ImagesListService {
                         print("✅ Фотографии загружены, отправляем уведомление")
                         self.sentNotification()
                         
-                        completion?(.success(newPhotos))
-                        
+                                                completion?(.success(newPhotos))
+ 
                     case .failure(let error):
                         print("Ошибка при загрузке фотографий: \(error)")
                         completion?(.failure(error))

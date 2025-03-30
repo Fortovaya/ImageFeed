@@ -6,8 +6,15 @@
 //
 
 import UIKit
+import Kingfisher
 
-final class ImagesListCell: UITableViewCell {
+protocol ImagesListCellDelegate: AnyObject {
+    func imageListCellDidTapLike(_ cell: ImagesListCell)
+}
+
+final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
+    
+    weak var delegate: ImagesListCellDelegate?
     
     // MARK: - Private properties
     private lazy var cellImage: UIImageView = {
@@ -42,13 +49,8 @@ final class ImagesListCell: UITableViewCell {
     
     override func prepareForReuse(){
         super.prepareForReuse()
-        
-        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
         cellImage.kf.cancelDownloadTask()
         cellImage.image = nil
-//        likeButton.setImage(likeButtonImage, for: .normal)
-//        dateLabel.text = date
-        
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -91,41 +93,34 @@ final class ImagesListCell: UITableViewCell {
         contentView.backgroundColor = .ypLightBlack
     }
     
-   func configureCellWithImage(image: UIImage, likeButtonImage: UIImage?, date: String) {
+    func configureCellWithImage(image: UIImage?, likeButtonImage: UIImage?, date: String) {
+        updateCellContent(image: image, likeButtonImage: likeButtonImage, date: date)
+    }
+    
+    private func updateCellContent(image: UIImage?, likeButtonImage: UIImage?, date: String) {
         cellImage.image = image
         likeButton.setImage(likeButtonImage, for: .normal)
         dateLabel.text = date
     }
-
+    
+    func setImage(from url: URL) {
+        cellImage.kf.cancelDownloadTask()
+        loadImage(from: url)
+    }
+    
+    private func loadImage(from url: URL) {
+        let resource = KF.ImageResource(downloadURL: url, cacheKey: url.absoluteString)
+        cellImage.kf.setImage(with: resource, placeholder: UIImage(named: "placeholder"))
+//        options: [.transition(.fade(0.3))]) { result in
+//            switch result {
+//            case .success(let value):
+//                print("Изображение успешно загружено из \(value.cacheType)")
+//            case .failure(let error):
+//                print("Ошибка загрузки изображения: \(error)")
+//            }
+//        }
+                              
+        cellImage.kf.indicatorType = .activity
+    }
 }
 
-/*
- 
- передача картинки в ячейку через Kingfisher
- 
- cellImage.kf.setImage(with: url) { result in
- // `result` is either a `.success(RetrieveImageResult)` or a `.failure(KingfisherError)`
- switch result {
- case .success(let value):
- // The image was set to image view:
- print(value.image)
- 
- // From where the image was retrieved:
- // - .none - Just downloaded.
- // - .memory - Got from memory cache.
- // - .disk - Got from disk cache.
- print(value.cacheType)
- 
- // The source object which contains information like `url`.
- print(value.source)
- 
- case .failure(let error):
- print(error) // The error happens
- }
- }
- 
- 
- Добавление строк с анимацией осуществляется методом tableView.insertRows(at:, with:), удаление — tableView.deleteRows(at:, with:).
- Как раз последний вариант и применим; остановимся на нём подробнее.
- 
- */
