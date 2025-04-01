@@ -16,8 +16,10 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     
     weak var delegate: ImagesListCellDelegate?
     
+    var imageURL: URL?
+    
     // MARK: - Private properties
-    private lazy var cellImage: UIImageView = {
+    private(set) var cellImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 16
@@ -93,12 +95,11 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         contentView.backgroundColor = .ypLightBlack
     }
     
-    func configureCellWithImage(image: UIImage?, likeButtonImage: UIImage?, date: String) {
-        updateCellContent(image: image, likeButtonImage: likeButtonImage, date: date)
+    func configureCellWithImage(likeButtonImage: UIImage?, date: String) {
+        updateCellContent(likeButtonImage: likeButtonImage, date: date)
     }
     
-    private func updateCellContent(image: UIImage?, likeButtonImage: UIImage?, date: String) {
-        cellImage.image = image
+    private func updateCellContent( likeButtonImage: UIImage?, date: String) {
         likeButton.setImage(likeButtonImage, for: .normal)
         dateLabel.text = date
     }

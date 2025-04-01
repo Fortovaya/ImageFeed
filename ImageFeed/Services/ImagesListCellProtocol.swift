@@ -9,7 +9,7 @@ import UIKit
 
 protocol ImagesListCellProtocol: AnyObject {
     
-    func configureCellWithImage(image: UIImage?, likeButtonImage: UIImage?, date: String)
+    func configureCellWithImage(likeButtonImage: UIImage?, date: String)
     func setImage(from url: URL)
     
 }

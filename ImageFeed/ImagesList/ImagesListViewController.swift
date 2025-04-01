@@ -177,7 +177,7 @@ extension ImagesListViewController {
             dateText = ""
         }
         cell.setImage(from: url)
-        cell.configureCellWithImage(image: nil, likeButtonImage: likeImage, date: dateText)
+        cell.configureCellWithImage(likeButtonImage: likeImage, date: dateText)
     }
     
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
