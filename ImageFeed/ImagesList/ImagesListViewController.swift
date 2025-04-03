@@ -128,8 +128,6 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-//        let photo = imagesListService.photos[indexPath.row]
-        
         let photo = photos[indexPath.row]
 
         guard let thumbImageURL = URL(string: photo.thumbImageURL) else { return cell }
@@ -182,7 +180,38 @@ extension ImagesListViewController {
     
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         print("Нажата кнопка лайк в ячейке \(cell)")
+        
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        var photo = photos[indexPath.row]
+        
+        let newLikeState = !photo.isLiked
+//        photo.isLiked = newLikeState
+        photos[indexPath.row].isLiked = newLikeState
+        
+        imagesListService.updateLikeImage(isLiked: newLikeState, likeButton: cell.likeButtonForAction)
+        UIBlockingProgressHUD.show()
+        imagesListService.changeLike(photoId: photo.id, isLike: newLikeState) { result in
+            switch result {
+            case .success:
+                print("Лайк успешно обновлен")
+//                self.photos[indexPath.row].isLiked = newLikeState
+                
+                self.photos = self.imagesListService.photos
+//                cell.setIsLiked(self.photos[indexPath.row].isLiked)
+                self.imagesListService.updateLikeImage(isLiked: self.photos[indexPath.row].isLiked, likeButton: cell.likeButtonForAction)
+                UIBlockingProgressHUD.dismiss()
+                
+            case .failure(let error):
+                UIBlockingProgressHUD.dismiss()
+                print("Ошибка при обновлении лайка: \(error)")
+                self.photos[indexPath.row].isLiked = !newLikeState
+                
+            }
+//            self.imagesListService.updateLikeImage(isLiked: newLikeState, likeButton: cell.likeButtonForAction)
+        }
     }
+    
+    
 }
 
 extension ImagesListViewController: UITableViewDelegate {

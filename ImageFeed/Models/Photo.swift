@@ -14,7 +14,7 @@ struct Photo: Codable {
     let welcomeDescription: String?
     let thumbImageURL: String
     let largeImageURL: String
-    let isLiked: Bool
+    var isLiked: Bool
     
     init(from photoResult: PhotoResult) {
         self.id = photoResult.id

@@ -29,7 +29,9 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     }()
     
     private lazy var likeButton: UIButton = {
-        let likeButton = UIButton()
+        let likeButton = UIButton(type: .custom)
+        likeButton.setTitle("No Active", for: .normal)
+        likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         return likeButton
     }()
@@ -41,6 +43,10 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    var likeButtonForAction: UIButton {
+        return likeButton
+    }
     
     // MARK: - Static properties
     static let reuseIdentifier = "ImagesListCell"
@@ -112,8 +118,11 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     private func loadImage(from url: URL) {
         let resource = KF.ImageResource(downloadURL: url, cacheKey: url.absoluteString)
         cellImage.kf.setImage(with: resource, placeholder: UIImage(named: "placeholder"))
-        print("Плейсхолдер должен отображаться до загрузки изображения.")
         cellImage.kf.indicatorType = .activity
+    }
+    
+    @objc private func didTapLikeButton() {
+        delegate?.imageListCellDidTapLike(self)
     }
 }
 

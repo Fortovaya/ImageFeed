@@ -8,7 +8,7 @@
 import UIKit
 
 final class ImagesListService: ImagesListServiceProtocol {
-    
+   
     private(set) var photos: [Photo] = []
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
@@ -21,6 +21,7 @@ final class ImagesListService: ImagesListServiceProtocol {
     static let shared = ImagesListService()
     private init(){}
     
+    //MARK: - Private methods
     func makePhotosNextPage(token: String) -> Result<URLRequest, OAuthTokenRequestError>{
         let nextPage = (lastLoadedPage ?? 0) + 1
         guard let baseURL = Constants.defaultBaseURL else {
@@ -111,4 +112,76 @@ final class ImagesListService: ImagesListServiceProtocol {
     func sentNotification() {
         NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
     }
+    
+    func makeChangeLikeRequest(photoId: String, token: String, isLiked: Bool) -> Result<URLRequest, OAuthTokenRequestError> {
+        guard let url = URL(string: "photos/\(photoId)/like", relativeTo: Constants.defaultBaseURL) else {
+            print("❌ Ошибка: Неверный URL makeChangeLikeRequest")
+            return.failure(.invalidBaseURL)
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = isLiked ? "DELETE" : "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        return .success(request)
+    }
+    
+    
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, NetworkError>) -> Void) {
+        
+        guard !isFetching else {
+            print("Запрос уже выполняется")
+            return
+        }
+        
+        isFetching = true
+        
+        guard let token = oAuth2TokenStorage.token else {
+            print("❌ Ошибка: Токен отсутствует")
+            completion(.failure(.missingToken))
+            isFetching = false
+            return
+        }
+        
+        switch makeChangeLikeRequest(photoId: photoId, token: token, isLiked: isLike){
+            
+        case .failure(let error):
+            print("❌ Ошибка создания запроса makeChangeLikeRequest: \(error)")
+            completion(.failure(.urlRequestError(error)))
+            isFetching = false
+            
+        case .success(let request):
+            let task = urlSession.objectTask(for: request){ [weak self ] (result: Result<PhotoResult, Error>) in
+                guard let self = self else { return }
+                self.isFetching = false
+                
+                DispatchQueue.main.async {
+                    print("JSON response: \(String(describing: result))")
+                    switch result {
+                    case .failure(let error):
+                        print("❌ Ошибка сети makeProfileImageRequest: \(error.localizedDescription)")
+                        completion(.failure(.urlRequestError(error)))
+                        
+                    case .success(let updatedPhotoResult):
+                        print("✅ Успешный ответ от API")
+                        
+                        if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                            self.photos[index] = Photo(from: updatedPhotoResult)
+                            self.sentNotification()
+                        }
+                        
+                        completion(.success(()))
+                        
+                    }
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    func updateLikeImage(isLiked: Bool, likeButton: UIButton) {
+        let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
+        likeButton.setImage(likeImage, for: .normal)
+    }
+
 }
