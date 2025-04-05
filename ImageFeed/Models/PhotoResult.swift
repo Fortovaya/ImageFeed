@@ -27,3 +27,5 @@ struct PhotoResult: Codable {
         case urls = "urls"
     }
 }
+
+

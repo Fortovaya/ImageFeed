@@ -134,7 +134,6 @@ final class SingleImageViewController: UIViewController {
     
     private func updateImage(from url: URL) {
          UIBlockingProgressHUD.show()
-         
          imageView.kf.setImage(with: url) { [weak self] result in
              UIBlockingProgressHUD.dismiss()
              guard let self = self else { return }
@@ -150,20 +149,16 @@ final class SingleImageViewController: UIViewController {
          }
      }
     
-    @objc
-    private func didDoubleTapImage() {
+    @objc private func didDoubleTapImage() {
         scrollView.setZoomScale(initialZoomScale, animated: true)
         centerImageIfNeeded()
     }
     
-    @objc 
-    private func didTapBackButton() {
+    @objc private func didTapBackButton() {
         navigationController?.popViewController(animated: true)
     }
     
-    
-    @objc
-    private func didTapShareButton(_ sender: Any) {
+    @objc private func didTapShareButton(_ sender: Any) {
         guard let image else { return }
         let share = UIActivityViewController(
             activityItems: [image],

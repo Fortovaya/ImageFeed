@@ -8,7 +8,7 @@
 import UIKit
 
 final class ImagesListService: ImagesListServiceProtocol {
-   
+  
     private(set) var photos: [Photo] = []
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
@@ -83,8 +83,8 @@ final class ImagesListService: ImagesListServiceProtocol {
                 switch result {
                 case .success(let photoResult):
                     print("Загружено \(photoResult.count) фотографий")
-                    let newPhotos = photoResult.map { Photo(from: $0) }
-                    
+//                    let newPhotos = photoResult.map { Photo(from: $0) }
+                    let newPhotos = Photo.makeArray(from: photoResult)
                     let uniquePhotos = newPhotos.filter { newPhoto in
                         !self.photos.contains { $0.id == newPhoto.id }
                     }
@@ -151,7 +151,7 @@ final class ImagesListService: ImagesListServiceProtocol {
             isFetching = false
             
         case .success(let request):
-            let task = urlSession.objectTask(for: request){ [weak self ] (result: Result<PhotoResult, Error>) in
+            let task = urlSession.objectTask(for: request){ [weak self ] (result: Result<LikeResult, Error>) in
                 guard let self = self else { return }
                 self.isFetching = false
                 
@@ -162,26 +162,32 @@ final class ImagesListService: ImagesListServiceProtocol {
                         print("❌ Ошибка сети makeProfileImageRequest: \(error.localizedDescription)")
                         completion(.failure(.urlRequestError(error)))
                         
-                    case .success(let updatedPhotoResult):
+                    case .success:
                         print("✅ Успешный ответ от API")
-                        
-                        if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
-                            self.photos[index] = Photo(from: updatedPhotoResult)
-                            self.sentNotification()
+                        if let index = self.photos.firstIndex(where: {$0.id == photoId}){
+                            let photo = self.photos[index]
+                            
+                            let newPhoto = Photo(id: photo.id,
+                                                 size: photo.size,
+                                                 createdAt: photo.createdAt,
+                                                 welcomeDescription: photo.welcomeDescription,
+                                                 thumbImageURL: photo.thumbImageURL,
+                                                 largeImageURL: photo.largeImageURL,
+                                                 isLiked: !photo.isLiked)
+                            
+                            self.photos[index] = newPhoto
                         }
-                        
                         completion(.success(()))
-                        
                     }
                 }
             }
             task.resume()
         }
     }
+//    
+//    func updateLikeImage(isLiked: Bool, likeButton: UIButton) {
+//        let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
+//        likeButton.setImage(likeImage, for: .normal)
+//    }
     
-    func updateLikeImage(isLiked: Bool, likeButton: UIButton) {
-        let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
-        likeButton.setImage(likeImage, for: .normal)
-    }
-
 }
