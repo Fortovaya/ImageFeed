@@ -25,7 +25,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         return imageView
     }()
     
-    private lazy var likeButton: UIButton = {
+    private(set) var likeButton: UIButton = {
         let likeButton = UIButton(type: .custom)
         likeButton.setTitle("No Active", for: .normal)
         likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
@@ -33,7 +33,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         return likeButton
     }()
     
-    private lazy var dateLabel: UILabel = {
+    private(set) var dateLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .ypWhite
@@ -94,15 +94,6 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         contentView.backgroundColor = .ypLightBlack
     }
     
-    func configureCellWithImage(likeButtonImage: UIImage?, date: String) {
-        updateCellContent(likeButtonImage: likeButtonImage, date: date)
-    }
-    
-    private func updateCellContent( likeButtonImage: UIImage?, date: String) {
-        likeButton.setImage(likeButtonImage, for: .normal)
-        dateLabel.text = date
-    }
-    
     func setImage(from url: URL) {
         cellImage.kf.cancelDownloadTask()
         loadImage(from: url)
@@ -114,10 +105,12 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         cellImage.kf.indicatorType = .activity
     }
     
-    func updateLikeButtonImage(_ image: UIImage?) {
-        likeButton.setImage(image, for: .normal)
+    func updateLikeButtonImage(_ isLike: Bool) {
+        let likeImage = isLike ? UIImage(named: "Active") : UIImage(named: "No Active")
+        likeButton.setImage(likeImage, for: .normal)
     }
     
+
     @objc private func didTapLikeButton() {
         delegate?.imageListCellDidTapLike(self)
     }

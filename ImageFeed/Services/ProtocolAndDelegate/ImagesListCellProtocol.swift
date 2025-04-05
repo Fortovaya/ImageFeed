@@ -8,8 +8,5 @@
 import UIKit
 
 protocol ImagesListCellProtocol: AnyObject {
-    
-    func configureCellWithImage(likeButtonImage: UIImage?, date: String)
     func setImage(from url: URL)
-    
 }

@@ -105,10 +105,6 @@ final class SingleImageViewController: UIViewController {
         ])
     }
         
-    private func showError(){ // сделать через модель AlertModel
-        
-    }
-    
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let visibleRectSize = scrollView.bounds.size
         let imageSize = image.size
@@ -134,7 +130,10 @@ final class SingleImageViewController: UIViewController {
     
     private func updateImage(from url: URL) {
          UIBlockingProgressHUD.show()
-         imageView.kf.setImage(with: url) { [weak self] result in
+        
+        let placeholderImage = UIImage(named: "placeholder")
+        
+         imageView.kf.setImage(with: url, placeholder: placeholderImage) { [weak self] result in
              UIBlockingProgressHUD.dismiss()
              guard let self = self else { return }
              
@@ -148,6 +147,10 @@ final class SingleImageViewController: UIViewController {
              }
          }
      }
+    
+    private func showError(){ // сделать через модель AlertModel
+        
+    }
     
     @objc private func didDoubleTapImage() {
         scrollView.setZoomScale(initialZoomScale, animated: true)

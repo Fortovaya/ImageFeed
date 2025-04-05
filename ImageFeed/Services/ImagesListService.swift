@@ -8,7 +8,7 @@
 import UIKit
 
 final class ImagesListService: ImagesListServiceProtocol {
-  
+    
     private(set) var photos: [Photo] = []
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
@@ -79,11 +79,10 @@ final class ImagesListService: ImagesListServiceProtocol {
                 guard let self = self else { return }
                 self.isFetching = false
                 
-                
                 switch result {
                 case .success(let photoResult):
                     print("Загружено \(photoResult.count) фотографий")
-//                    let newPhotos = photoResult.map { Photo(from: $0) }
+                
                     let newPhotos = Photo.makeArray(from: photoResult)
                     let uniquePhotos = newPhotos.filter { newPhoto in
                         !self.photos.contains { $0.id == newPhoto.id }
@@ -120,7 +119,7 @@ final class ImagesListService: ImagesListServiceProtocol {
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = isLiked ? "DELETE" : "POST"
+        request.httpMethod = isLiked ? "POST" : "DELETE"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         return .success(request)
@@ -184,10 +183,4 @@ final class ImagesListService: ImagesListServiceProtocol {
             task.resume()
         }
     }
-//    
-//    func updateLikeImage(isLiked: Bool, likeButton: UIButton) {
-//        let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
-//        likeButton.setImage(likeImage, for: .normal)
-//    }
-    
 }

@@ -10,7 +10,6 @@ import UIKit
 final class ImagesListViewController: UIViewController {
     
     //MARK: - Private variables
-    //    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private let currentDate = Date()
     private let imagesListService: ImagesListServiceProtocol = ImagesListService.shared
     private var imageListServiceObserver: Any?
@@ -21,6 +20,12 @@ final class ImagesListViewController: UIViewController {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "ru_RU")
+        return formatter
+    }()
+    
+    private lazy var serverDateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
         return formatter
     }()
     
@@ -88,8 +93,7 @@ final class ImagesListViewController: UIViewController {
     func updateTableViewAnimated() {
         let oldCount = photos.count
         let newCount = imagesListService.photos.count
-        //        photos = imagesListService.photos
-        
+    
         let newPhotos = imagesListService.photos.suffix(newCount - oldCount)
         photos.append(contentsOf: newPhotos)
         
@@ -159,20 +163,21 @@ extension ImagesListViewController {
             print("❌ Ошибка: indexPath.row (\(indexPath.row)) выходит за границы массива photos.count (\(photos.count))")
             return
         }
+
         let photo = photos[indexPath.row]
         
         let url = photo.thumbImageURL
         
         let isLiked = photo.isLiked
         let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
-        let dateText: String
-        if let dateString = photo.createdAt, let date = dateFormatter.date(from: dateString) {
-            dateText = dateFormatter.string(from: date)
+
+        if let dateString = photo.createdAt, let date = serverDateFormatter.date(from: dateString) {
+            cell.dateLabel.text = dateFormatter.string(from: date)
         } else {
-            dateText = ""
+            cell.dateLabel.text = ""
         }
         cell.setImage(from: url)
-        cell.configureCellWithImage(likeButtonImage: likeImage, date: dateText)
+        cell.likeButton.setImage(likeImage, for: .normal)
     }
 }
 
@@ -209,32 +214,31 @@ extension ImagesListViewController: UITableViewDelegate {
 extension ImagesListViewController: ImagesListCellDelegate {
     
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        assert(Thread.isMainThread)
+
         print("Нажата кнопка лайк в ячейке \(cell)")
         
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        var photo = photos[indexPath.row]
-        
+        let photo = photos[indexPath.row]
         
         let newIsLiked = !photo.isLiked
         
         UIBlockingProgressHUD.show()
         
         imagesListService.changeLike(photoId: photo.id, isLike: newIsLiked) { [weak self] result in
-            guard let self = self else { return }
+            guard let self = self else {
+                UIBlockingProgressHUD.dismiss()
+                return }
        
             switch result {
             case .success:
                 self.photos = self.imagesListService.photos
-                
-                let updatePhoto = self.photos[indexPath.row]
-                let likeImage = updatePhoto.isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
-                cell.updateLikeButtonImage(likeImage)
-                
+                cell.updateLikeButtonImage(self.photos[indexPath.row].isLiked)
                 UIBlockingProgressHUD.dismiss()
                 
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
-                let alert = UIAlertController(title: "Ошибка", message: "Не удалось изменить лайк. Попробуйте снова позже.", preferredStyle: .alert) //доделать через AlertModel
+                let alert = UIAlertController(title: "Ошибка", message: "Не удалось изменить лайк.", preferredStyle: .alert) //доделать через AlertModel
                 alert.addAction(UIAlertAction(title: "OK", style: .default)) //доделать через AlertModel
                 self.present(alert, animated: true, completion: nil) //доделать через AlertModel
                 print("❌ Ошибка при изменении лайка: \(error.localizedDescription)") //доделать через AlertModel
