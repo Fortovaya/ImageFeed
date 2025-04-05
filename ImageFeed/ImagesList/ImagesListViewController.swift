@@ -224,14 +224,20 @@ extension ImagesListViewController: ImagesListCellDelegate {
        
             switch result {
             case .success:
-                photo.isLiked = newIsLiked
-                self.photos[indexPath.row] = photo
+                self.photos = self.imagesListService.photos
                 
-                let likeImage = newIsLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
+                let updatePhoto = self.photos[indexPath.row]
+                let likeImage = updatePhoto.isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
                 cell.updateLikeButtonImage(likeImage)
                 
+                UIBlockingProgressHUD.dismiss()
+                
             case .failure(let error):
-                print("❌ Ошибка при изменении лайка: \(error.localizedDescription)")
+                UIBlockingProgressHUD.dismiss()
+                let alert = UIAlertController(title: "Ошибка", message: "Не удалось изменить лайк. Попробуйте снова позже.", preferredStyle: .alert) //доделать через AlertModel
+                alert.addAction(UIAlertAction(title: "OK", style: .default)) //доделать через AlertModel
+                self.present(alert, animated: true, completion: nil) //доделать через AlertModel
+                print("❌ Ошибка при изменении лайка: \(error.localizedDescription)") //доделать через AlertModel
             }
         }
     }
