@@ -8,9 +8,6 @@
 import UIKit
 import Kingfisher
 
-protocol ImagesListCellDelegate: AnyObject {
-    func imageListCellDidTapLike(_ cell: ImagesListCell)
-}
 
 final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     
@@ -43,10 +40,6 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    var likeButtonForAction: UIButton {
-        return likeButton
-    }
     
     // MARK: - Static properties
     static let reuseIdentifier = "ImagesListCell"
@@ -119,6 +112,10 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         let resource = KF.ImageResource(downloadURL: url, cacheKey: url.absoluteString)
         cellImage.kf.setImage(with: resource, placeholder: UIImage(named: "placeholder"))
         cellImage.kf.indicatorType = .activity
+    }
+    
+    func updateLikeButtonImage(_ image: UIImage?) {
+        likeButton.setImage(image, for: .normal)
     }
     
     @objc private func didTapLikeButton() {
