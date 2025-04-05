@@ -12,8 +12,8 @@ struct Photo: Codable {
     let size: CGSize
     let createdAt: String?
     let welcomeDescription: String?
-    let thumbImageURL: String
-    let largeImageURL: String
+    let thumbImageURL: URL
+    let largeImageURL: URL
     var isLiked: Bool
     
     init(from photoResult: PhotoResult) {

@@ -6,14 +6,17 @@
 //
 
 import UIKit
+import ProgressHUD
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
     // MARK: - Public properties
-    var image: UIImage? {
+    
+    var image: Photo? {
         didSet {
             guard isViewLoaded, let image = image else { return }
-            updateImage(image)
+            updateImage(from: image.largeImageURL)
         }
     }
     
@@ -67,9 +70,9 @@ final class SingleImageViewController: UIViewController {
         imageView.isUserInteractionEnabled = true
         
         guard let image = image else { return }
-        imageView.image = image
-        imageView.frame.size = image.size
-        rescaleAndCenterImageInScrollView(image: image)
+
+        
+        updateImage(from: image.largeImageURL)
     }
     
     // MARK: - Private Methods
@@ -101,6 +104,10 @@ final class SingleImageViewController: UIViewController {
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 11)
         ])
     }
+        
+    private func showError(){ // сделать через модель AlertModel
+        
+    }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let visibleRectSize = scrollView.bounds.size
@@ -125,10 +132,23 @@ final class SingleImageViewController: UIViewController {
         scrollView.contentInset = UIEdgeInsets(top: y, left: x, bottom: y, right: x)
     }
     
-    private func updateImage(_ image: UIImage) {
-        imageView.image = image
-        rescaleAndCenterImageInScrollView(image: image)
-    }
+    private func updateImage(from url: URL) {
+         UIBlockingProgressHUD.show()
+         
+         imageView.kf.setImage(with: url) { [weak self] result in
+             UIBlockingProgressHUD.dismiss()
+             guard let self = self else { return }
+             
+             switch result {
+             case .success(let imageResult):
+                 self.imageView.image = imageResult.image
+                 self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+             case .failure(let error):
+                 self.showError() //доделать через AlertModel
+                 print("Ошибка загрузки изображения: \(error)")
+             }
+         }
+     }
     
     @objc
     private func didDoubleTapImage() {
@@ -136,7 +156,7 @@ final class SingleImageViewController: UIViewController {
         centerImageIfNeeded()
     }
     
-    @objc
+    @objc 
     private func didTapBackButton() {
         navigationController?.popViewController(animated: true)
     }
@@ -149,7 +169,8 @@ final class SingleImageViewController: UIViewController {
             activityItems: [image],
             applicationActivities: nil
         )
-        present(share, animated: true, completion: nil)    }
+        present(share, animated: true)
+    }
     
 }
 
