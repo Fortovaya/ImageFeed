@@ -65,7 +65,8 @@ final class SplashViewController: UIViewController {
             print("Токен отсутствует, переход на AuthViewController")
             let authViewController = AuthViewController()
             authViewController.delegate = self
-            navigationController?.pushViewController(authViewController, animated: true)
+            authViewController.modalPresentationStyle = .fullScreen
+            present(authViewController, animated: true)
         }
     }
     

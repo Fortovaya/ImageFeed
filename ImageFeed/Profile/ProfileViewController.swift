@@ -207,7 +207,7 @@ final class ProfileViewController: UIViewController {
                                     secondButtonCompletion: {
             self.resetToDefaultProfileData()
             ProfileLogoutService.shared.logout()
-            
+
             let splashViewController = SplashViewController()
             if let window = UIApplication.shared.windows.first {
                 window.rootViewController = splashViewController
