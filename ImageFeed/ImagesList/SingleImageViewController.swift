@@ -106,7 +106,7 @@ final class SingleImageViewController: UIViewController {
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 11)
         ])
     }
-        
+    
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let visibleRectSize = scrollView.bounds.size
         let imageSize = image.size
@@ -145,19 +145,19 @@ final class SingleImageViewController: UIViewController {
                 self.imageView.contentMode = .scaleAspectFill
                 self.imageView.image = imageResult.image
                 self.rescaleAndCenterImageInScrollView(image: imageResult.image)
-             case .failure(let error):
-                 let alertModel = AlertModel(title: "Ошибка",
-                                             message: "Не удалось загрузить изображение",
-                                             buttonText: "Ok",
-                                             completion: { self.navigationController?.popViewController(animated: true)},
-                                             secondButtonText: nil,
-                                             secondButtonCompletion: nil)
-                 
-                 errorAlert.showAlert(with: alertModel)
-                 print("Ошибка загрузки изображения: \(error)")
-             }
-         }
-     }
+            case .failure(let error):
+                let alertModel = AlertModel(title: "Ошибка",
+                                            message: "Не удалось загрузить изображение",
+                                            buttonText: "Ok",
+                                            completion: { self.navigationController?.popViewController(animated: true)},
+                                            secondButtonText: nil,
+                                            secondButtonCompletion: nil)
+                
+                errorAlert.showAlert(with: alertModel)
+                print("Ошибка загрузки изображения: \(error)")
+            }
+        }
+    }
     
     @objc private func didDoubleTapImage() {
         scrollView.setZoomScale(initialZoomScale, animated: true)

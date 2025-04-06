@@ -102,7 +102,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     }
     
     private func loadImage(from url: URL) {
-
+        
         cellImage.contentMode = .center
         
         let resource = KF.ImageResource(downloadURL: url, cacheKey: url.absoluteString)
@@ -131,7 +131,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         likeButton.setImage(likeImage, for: .normal)
     }
     
-
+    
     @objc private func didTapLikeButton() {
         delegate?.imageListCellDidTapLike(self)
     }

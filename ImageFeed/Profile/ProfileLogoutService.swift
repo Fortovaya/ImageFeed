@@ -15,7 +15,7 @@ final class ProfileLogoutService {
     
     static let shared = ProfileLogoutService()
     private init(){}
-        
+    
     func logout(){
         oAuth2TokenStorage.clearToken()
         imagesListService.cleanImageList()
@@ -27,7 +27,6 @@ final class ProfileLogoutService {
         WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
             records.forEach { record in
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler:{})
-                
             }
         }
     }

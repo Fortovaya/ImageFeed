@@ -8,7 +8,7 @@
 import UIKit
 
 final class ImagesListService: ImagesListServiceProtocol {
-    
+    //MARK: - Private variables
     private(set) var photos: [Photo] = []
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
@@ -82,7 +82,7 @@ final class ImagesListService: ImagesListServiceProtocol {
                 switch result {
                 case .success(let photoResult):
                     print("Загружено \(photoResult.count) фотографий")
-                
+                    
                     let newPhotos = Photo.makeArray(from: photoResult)
                     let uniquePhotos = newPhotos.filter { newPhoto in
                         !self.photos.contains { $0.id == newPhoto.id }
@@ -108,10 +108,6 @@ final class ImagesListService: ImagesListServiceProtocol {
         }
     }
     
-    func sentNotification() {
-        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
-    }
-    
     func makeChangeLikeRequest(photoId: String, token: String, isLiked: Bool) -> Result<URLRequest, OAuthTokenRequestError> {
         guard let url = URL(string: "photos/\(photoId)/like", relativeTo: Constants.defaultBaseURL) else {
             print("❌ Ошибка: Неверный URL makeChangeLikeRequest")
@@ -124,7 +120,6 @@ final class ImagesListService: ImagesListServiceProtocol {
         
         return .success(request)
     }
-    
     
     func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, NetworkError>) -> Void) {
         
@@ -182,6 +177,10 @@ final class ImagesListService: ImagesListServiceProtocol {
             }
             task.resume()
         }
+    }
+    
+    func sentNotification() {
+        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
     }
     
     func cleanImageList(){
