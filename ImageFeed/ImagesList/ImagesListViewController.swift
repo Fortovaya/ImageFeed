@@ -94,17 +94,19 @@ final class ImagesListViewController: UIViewController {
     func updateTableViewAnimated() {
         let oldCount = photos.count
         let newCount = imagesListService.photos.count
-    
+        
         let newPhotos = imagesListService.photos.suffix(newCount - oldCount)
         photos.append(contentsOf: newPhotos)
         
-        if oldCount != newCount {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            } completion: { _ in }
+        DispatchQueue.main.async {
+            if oldCount != newCount {
+                self.tableView.performBatchUpdates {
+                    let indexPaths = (oldCount..<newCount).map { i in
+                        IndexPath(row: i, section: 0)
+                    }
+                    self.tableView.insertRows(at: indexPaths, with: .automatic)
+                } completion: { _ in }
+            }
         }
     }
     
@@ -112,6 +114,13 @@ final class ImagesListViewController: UIViewController {
         imageListServiceObserver = NotificationCenter.default.addObserver(forName: ImagesListService.didChangeNotification, object: nil, queue: .main){ [weak self] _ in
             guard let self = self else{ return }
             self.updateTableViewAnimated()
+        }
+    }
+    
+    // MARK: - deinit
+    deinit {
+        if let observer = imageListServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
         }
     }
 }
@@ -144,7 +153,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
- 
+        
         if indexPath.row == photos.count - 1 {
             imagesListService.fetchPhotosNextPage { result in
                 switch result {
@@ -164,14 +173,14 @@ extension ImagesListViewController {
             print("❌ Ошибка: indexPath.row (\(indexPath.row)) выходит за границы массива photos.count (\(photos.count))")
             return
         }
-
+        
         let photo = photos[indexPath.row]
         
         let url = photo.thumbImageURL
         
         let isLiked = photo.isLiked
         let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
-
+        
         if let dateString = photo.createdAt, let date = serverDateFormatter.date(from: dateString) {
             cell.dateLabel.text = dateFormatter.string(from: date)
         } else {
@@ -230,7 +239,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
             guard let self = self else {
                 UIBlockingProgressHUD.dismiss()
                 return }
-       
+            
             switch result {
             case .success:
                 self.photos = self.imagesListService.photos

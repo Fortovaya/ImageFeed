@@ -70,9 +70,11 @@ final class SingleImageViewController: UIViewController {
         imageView.addGestureRecognizer(doubleTapGesture)
         imageView.isUserInteractionEnabled = true
         
-        guard let image = image else { return }
+//        guard let image = image else { return }
 
-        updateImage(from: image.largeImageURL)
+        if let image = image {
+              updateImage(from: image.largeImageURL)
+          }
     }
     
     // MARK: - Private Methods
@@ -130,7 +132,7 @@ final class SingleImageViewController: UIViewController {
     
     private func updateImage(from url: URL) {
          UIBlockingProgressHUD.show()
-        
+
         let placeholderImage = UIImage(named: "placeholder")
         
          imageView.kf.setImage(with: url, placeholder: placeholderImage) { [weak self] result in
