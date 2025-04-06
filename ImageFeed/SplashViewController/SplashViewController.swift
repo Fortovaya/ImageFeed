@@ -100,7 +100,9 @@ final class SplashViewController: UIViewController {
                 let alertModel = AlertModel(title: "Ошибка",
                                             message: "Не удалось загрузить профиль: \(error.localizedDescription)",
                                             buttonText: "OK",
-                                            completion: nil)
+                                            completion: nil,
+                                            secondButtonText: nil,
+                                            secondButtonCompletion: nil)
                 showErrorAlert.showAlert(with: alertModel)
             }
         }

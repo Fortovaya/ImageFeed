@@ -13,6 +13,7 @@ final class ImagesListViewController: UIViewController {
     private let currentDate = Date()
     private let imagesListService: ImagesListServiceProtocol = ImagesListService.shared
     private var imageListServiceObserver: Any?
+    private lazy var errorAlert = AlertPresenter(viewController: self)
     
     private var photos: [Photo] = []
     
@@ -143,7 +144,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // TO DO: sprint_12
+ 
         if indexPath.row == photos.count - 1 {
             imagesListService.fetchPhotosNextPage { result in
                 switch result {
@@ -215,7 +216,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
     
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         assert(Thread.isMainThread)
-
+        
         print("Нажата кнопка лайк в ячейке \(cell)")
         
         guard let indexPath = tableView.indexPath(for: cell) else { return }
@@ -238,10 +239,14 @@ extension ImagesListViewController: ImagesListCellDelegate {
                 
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
-                let alert = UIAlertController(title: "Ошибка", message: "Не удалось изменить лайк.", preferredStyle: .alert) //доделать через AlertModel
-                alert.addAction(UIAlertAction(title: "OK", style: .default)) //доделать через AlertModel
-                self.present(alert, animated: true, completion: nil) //доделать через AlertModel
-                print("❌ Ошибка при изменении лайка: \(error.localizedDescription)") //доделать через AlertModel
+                let alertModel = AlertModel(title: "Ошибка",
+                                            message: "Не удалось изменить лайк.",
+                                            buttonText: "OK",
+                                            completion: nil,
+                                            secondButtonText: nil,
+                                            secondButtonCompletion: nil)
+                errorAlert.showAlert(with: alertModel)
+                print("❌ Ошибка при изменении лайка: \(error.localizedDescription)")
             }
         }
     }

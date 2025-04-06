@@ -10,10 +10,15 @@ import WebKit
 
 final class ProfileLogoutService {
     
+    private let oAuth2TokenStorage = OAuth2TokenStorage.storage
+    private let imagesListService = ImagesListService.shared
+    
     static let shared = ProfileLogoutService()
     private init(){}
-    
+        
     func logout(){
+        oAuth2TokenStorage.clearToken()
+        imagesListService.cleanImageList()
         cleanCookies()
     }
     

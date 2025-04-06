@@ -12,7 +12,6 @@ import Kingfisher
 final class SingleImageViewController: UIViewController {
     
     // MARK: - Public properties
-    
     var image: Photo? {
         didSet {
             guard isViewLoaded, let image = image else { return }
@@ -57,7 +56,9 @@ final class SingleImageViewController: UIViewController {
         return button
     }()
     
+    private lazy var errorAlert = AlertPresenter(viewController: self)
     private var initialZoomScale: CGFloat = 1.0
+    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -71,7 +72,6 @@ final class SingleImageViewController: UIViewController {
         
         guard let image = image else { return }
 
-        
         updateImage(from: image.largeImageURL)
     }
     
@@ -142,15 +142,18 @@ final class SingleImageViewController: UIViewController {
                  self.imageView.image = imageResult.image
                  self.rescaleAndCenterImageInScrollView(image: imageResult.image)
              case .failure(let error):
-                 self.showError() //доделать через AlertModel
+                 let alertModel = AlertModel(title: "Ошибка",
+                                             message: "Не удалось загрузить изображение",
+                                             buttonText: "Ok",
+                                             completion: { self.navigationController?.popViewController(animated: true)},
+                                             secondButtonText: nil,
+                                             secondButtonCompletion: nil)
+                 
+                 errorAlert.showAlert(with: alertModel)
                  print("Ошибка загрузки изображения: \(error)")
              }
          }
      }
-    
-    private func showError(){ // сделать через модель AlertModel
-        
-    }
     
     @objc private func didDoubleTapImage() {
         scrollView.setZoomScale(initialZoomScale, animated: true)
@@ -169,7 +172,6 @@ final class SingleImageViewController: UIViewController {
         )
         present(share, animated: true)
     }
-    
 }
 
 // MARK: - UIScrollViewDelegate

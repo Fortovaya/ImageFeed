@@ -113,7 +113,9 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 let alertModel = AlertModel(title: "Что-то пошло не так(",
                                             message: "Не удалось войти в систему",
                                             buttonText: "OK",
-                                            completion: nil)
+                                            completion: nil,
+                                            secondButtonText: nil,
+                                            secondButtonCompletion: nil)
                 errorAlert.showAlert(with: alertModel)
             }
             UIBlockingProgressHUD.dismiss()

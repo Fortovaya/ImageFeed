@@ -47,7 +47,7 @@ final class ProfileViewController: UIViewController {
     }()
     
     private lazy var logoutButton: UIButton = {
-        let logoutButton = UIButton(type: .system)
+        let logoutButton = UIButton(type: .custom)
         if let exitImage = UIImage(named: "Exit"){
             logoutButton.setImage(exitImage, for: .normal)
         }
@@ -58,6 +58,7 @@ final class ProfileViewController: UIViewController {
     
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    private lazy var errorAlert = AlertPresenter(viewController: self)
     
     //MARK: - Deinit
     deinit {
@@ -178,8 +179,38 @@ final class ProfileViewController: UIViewController {
         }
     }
     
+    private func resetToDefaultProfileData() {
+        let cleanURL: URL? = nil
+        self.avatarImageView.kf.setImage(with: cleanURL, placeholder: UIImage(named: "PlaceholderAvatar"))
+        
+        DispatchQueue.main.async {
+            let defaultImage = UIImage(named: "Photo")
+            let defaultName = "Екатерина Новикова"
+            let defaultLoginName = "@ekaterina_nov"
+            let defaultDescription = "Hello, world!"
+            
+            self.avatarImageView.image = defaultImage
+            self.nameLabel.text = defaultName
+            self.loginNameLabel.text = defaultLoginName
+            self.descriptionLabel.text = defaultDescription
+        }
+    }
+    
     //MARK: - Action
     @objc private func didTapLogoutButton() {
-        //TO DO: code
+        print("Logout button tapped")
+        let alertmodel = AlertModel(title: "Пока, пока!",
+                                    message: "Уверены что хотите выйти?",
+                                    buttonText: "Нет",
+                                    completion: nil,
+                                    secondButtonText: "Да",
+                                    secondButtonCompletion: {
+            self.resetToDefaultProfileData()
+            ProfileLogoutService.shared.logout()
+            
+            let authViewController = AuthViewController()
+            self.navigationController?.setViewControllers([authViewController], animated: true)
+        })
+        errorAlert.showAlert(with: alertmodel)
     }
 }

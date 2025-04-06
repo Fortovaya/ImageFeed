@@ -183,4 +183,9 @@ final class ImagesListService: ImagesListServiceProtocol {
             task.resume()
         }
     }
+    
+    func cleanImageList(){
+        photos.removeAll()
+        lastLoadedPage = 0
+    }
 }

@@ -26,5 +26,11 @@ final class OAuth2TokenStorage {
     
     private let tokenKey = "oauthToken"
     
+    func clearToken() {
+        token = nil
+    }
+    
     private init() { }
+    
+   
 }
