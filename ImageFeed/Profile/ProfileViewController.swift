@@ -208,8 +208,11 @@ final class ProfileViewController: UIViewController {
             self.resetToDefaultProfileData()
             ProfileLogoutService.shared.logout()
             
-            let authViewController = AuthViewController()
-            self.navigationController?.setViewControllers([authViewController], animated: true)
+            let splashViewController = SplashViewController()
+            if let window = UIApplication.shared.windows.first {
+                window.rootViewController = splashViewController
+                window.makeKeyAndVisible()
+            }
         })
         errorAlert.showAlert(with: alertmodel)
     }
