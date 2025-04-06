@@ -29,6 +29,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         let likeButton = UIButton(type: .custom)
         likeButton.setTitle("No Active", for: .normal)
         likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
+        likeButton.isHidden = true
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         return likeButton
     }()
@@ -37,6 +38,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .ypWhite
+        label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -100,8 +102,27 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     }
     
     private func loadImage(from url: URL) {
+
+        cellImage.contentMode = .center
+        
         let resource = KF.ImageResource(downloadURL: url, cacheKey: url.absoluteString)
-        cellImage.kf.setImage(with: resource, placeholder: UIImage(named: "placeholder"))
+        
+        cellImage.kf.setImage(with: resource,
+                              placeholder: UIImage(named: "placeholder"),
+                              options: [.transition(.fade(0.3))]
+        ) { result in
+            switch result {
+            case .success(let imageResult):
+                self.likeButton.isHidden = false
+                self.dateLabel.isHidden = false
+                self.cellImage.contentMode = .scaleAspectFill
+                self.cellImage.image = imageResult.image
+            case .failure(_):
+                self.cellImage.contentMode = .center
+                self.likeButton.isHidden = true
+                self.dateLabel.isHidden = true
+            }
+        }
         cellImage.kf.indicatorType = .activity
     }
     

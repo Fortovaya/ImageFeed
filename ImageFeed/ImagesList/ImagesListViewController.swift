@@ -184,8 +184,10 @@ extension ImagesListViewController {
         if let dateString = photo.createdAt, let date = serverDateFormatter.date(from: dateString) {
             cell.dateLabel.text = dateFormatter.string(from: date)
         } else {
-            cell.dateLabel.text = ""
+            cell.dateLabel.isHidden = true
         }
+        
+        cell.cellImage.backgroundColor = .ypDarkGray
         cell.setImage(from: url)
         cell.likeButton.setImage(likeImage, for: .normal)
     }

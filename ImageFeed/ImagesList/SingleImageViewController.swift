@@ -63,6 +63,7 @@ final class SingleImageViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
         setupViewConstraints()
         
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(didDoubleTapImage))
@@ -70,11 +71,10 @@ final class SingleImageViewController: UIViewController {
         imageView.addGestureRecognizer(doubleTapGesture)
         imageView.isUserInteractionEnabled = true
         
-//        guard let image = image else { return }
-
-        if let image = image {
-              updateImage(from: image.largeImageURL)
-          }
+        guard let image = image else { return }
+        updateImage(from: image.largeImageURL)
+        
+        
     }
     
     // MARK: - Private Methods
@@ -131,18 +131,20 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func updateImage(from url: URL) {
-         UIBlockingProgressHUD.show()
-
-        let placeholderImage = UIImage(named: "placeholder")
+        UIBlockingProgressHUD.show()
         
-         imageView.kf.setImage(with: url, placeholder: placeholderImage) { [weak self] result in
-             UIBlockingProgressHUD.dismiss()
-             guard let self = self else { return }
-             
-             switch result {
-             case .success(let imageResult):
-                 self.imageView.image = imageResult.image
-                 self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+        let placeholderImage = UIImage(named: "placeholder")
+        imageView.contentMode = .center
+        
+        imageView.kf.setImage(with: url, placeholder: placeholderImage) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let imageResult):
+                self.imageView.contentMode = .scaleAspectFill
+                self.imageView.image = imageResult.image
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
              case .failure(let error):
                  let alertModel = AlertModel(title: "Ошибка",
                                              message: "Не удалось загрузить изображение",
