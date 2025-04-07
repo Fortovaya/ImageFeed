@@ -43,6 +43,7 @@ final class AuthViewController: UIViewController {
     //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .ypLightBlack
         setupUI()
         navigationItem.hidesBackButton = true
     }
@@ -60,7 +61,7 @@ final class AuthViewController: UIViewController {
         NSLayoutConstraint.activate([
             logoOfUnsplashImageView.heightAnchor.constraint(equalToConstant: 60),
             logoOfUnsplashImageView.widthAnchor.constraint(equalToConstant: 60),
-            logoOfUnsplashImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 236),
+            logoOfUnsplashImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             logoOfUnsplashImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
@@ -72,7 +73,7 @@ final class AuthViewController: UIViewController {
             activeButton.heightAnchor.constraint(equalToConstant: 48),
             activeButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             activeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            activeButton.topAnchor.constraint(equalTo: logoOfUnsplashImageView.bottomAnchor, constant: 300)
+            activeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -90)
         ])
     }
     

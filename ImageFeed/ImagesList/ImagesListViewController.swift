@@ -245,7 +245,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
             switch result {
             case .success:
                 self.photos = self.imagesListService.photos
-                cell.updateLikeButtonImage(self.photos[indexPath.row].isLiked)
+                cell.setIsLiked(self.photos[indexPath.row].isLiked)
                 UIBlockingProgressHUD.dismiss()
                 
             case .failure(let error):

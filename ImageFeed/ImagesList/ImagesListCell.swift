@@ -27,8 +27,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     
     private(set) var likeButton: UIButton = {
         let likeButton = UIButton(type: .custom)
-        likeButton.setTitle("No Active", for: .normal)
-        likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
+        likeButton.addTarget(nil, action: #selector(didTapLikeButton), for: .touchUpInside)
         likeButton.isHidden = true
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         return likeButton
@@ -126,7 +125,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         cellImage.kf.indicatorType = .activity
     }
     
-    func updateLikeButtonImage(_ isLike: Bool) {
+    func setIsLiked(_ isLike: Bool) {
         let likeImage = isLike ? UIImage(named: "Active") : UIImage(named: "No Active")
         likeButton.setImage(likeImage, for: .normal)
     }
