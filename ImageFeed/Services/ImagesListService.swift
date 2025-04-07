@@ -88,10 +88,11 @@ final class ImagesListService: ImagesListServiceProtocol {
                         !self.photos.contains { $0.id == newPhoto.id }
                     }
                     
-                    self.photos.append(contentsOf: uniquePhotos)
-                    self.lastLoadedPage = nextPage
-                    
                     DispatchQueue.main.async {
+                        self.photos.append(contentsOf: uniquePhotos)
+                        self.lastLoadedPage = nextPage
+                        
+                        
                         print("✅ Фотографии загружены, отправляем уведомление")
                         self.sentNotification()
                         completion?(.success(uniquePhotos))
