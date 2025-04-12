@@ -31,7 +31,7 @@ struct AuthConfiguration {
         self.authURLString = authURLString
     }
     
-    // Статическая переменная для стандартной конфигурации
+    
     static var standard: AuthConfiguration {
         return AuthConfiguration(accessKey: Constants.accessKey,
                                  secretKey: Constants.secretKey,
@@ -41,9 +41,8 @@ struct AuthConfiguration {
                                  defaultBaseURL: Constants.defaultBaseURL)
     }
     
-    // Статическая переменная для тестовой конфигурации (можно будет использовать для тестирования)
+    
     static var test: AuthConfiguration? {
-        guard let baseURL = Constants.defaultBaseURL else { return nil }
         return AuthConfiguration(accessKey: Constants.accessKey,
                                  secretKey: Constants.secretKey,
                                  redirectURI: Constants.redirectURI,
