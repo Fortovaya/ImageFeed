@@ -87,6 +87,12 @@ final class AuthViewController: UIViewController {
     //MARK: - Action
     @objc private func didTapActiveButton(){
         let webViewVC = WebViewViewController()
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+        
+        webViewVC.presenter = webViewPresenter
+        webViewPresenter.view = webViewVC
+       
         webViewVC.delegate = self
         
         let navigationController = UINavigationController(rootViewController: webViewVC)
