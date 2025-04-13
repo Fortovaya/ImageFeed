@@ -83,6 +83,9 @@ final class WebViewViewController: UIViewController, WKUIDelegate, WebViewViewCo
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+#if DEBUG
+        webView.accessibilityIdentifier = "UnsplashWebView"
+#endif
     }
     
     private func configureProgressView(){

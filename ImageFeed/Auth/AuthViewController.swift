@@ -75,6 +75,10 @@ final class AuthViewController: UIViewController {
             activeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             activeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -90)
         ])
+        
+#if DEBUG
+        activeButton.accessibilityIdentifier = "Authenticate"
+#endif
     }
     
     private func configureBackButton() {

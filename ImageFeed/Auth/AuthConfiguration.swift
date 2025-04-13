@@ -31,7 +31,6 @@ struct AuthConfiguration {
         self.authURLString = authURLString
     }
     
-    
     static var standard: AuthConfiguration {
         return AuthConfiguration(accessKey: Constants.accessKey,
                                  secretKey: Constants.secretKey,
@@ -41,8 +40,7 @@ struct AuthConfiguration {
                                  defaultBaseURL: Constants.defaultBaseURL)
     }
     
-    
-    static var test: AuthConfiguration? {
+    static var test: AuthConfiguration {
         return AuthConfiguration(accessKey: Constants.accessKey,
                                  secretKey: Constants.secretKey,
                                  redirectURI: Constants.redirectURI,
@@ -51,9 +49,3 @@ struct AuthConfiguration {
                                  defaultBaseURL: Constants.defaultBaseURL)
     }
 }
-
-
-/*
-let authConfig = AuthConfiguration.standard
-print(authConfig.accessKey)
-*/
