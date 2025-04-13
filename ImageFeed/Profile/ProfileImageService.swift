@@ -22,10 +22,11 @@ final class ProfileImageService {
     private(set) var avatarURL: String?
     private var task: URLSessionTask?
     private var isFetching = false
+    private let authConfiguration = AuthConfiguration.standard
     
     //MARK: - Private Method
     func makeProfileImageRequest(username: String, token: String) -> Result<URLRequest, OAuthTokenRequestError> {
-        guard let url = URL(string: "users/\(username)", relativeTo: Constants.defaultBaseURL) else {
+        guard let url = URL(string: "users/\(username)", relativeTo: authConfiguration.defaultBaseURL) else {
             print("❌ Ошибка: Неверный URL ProfileImageRequest")
             return.failure(.invalidBaseURL)
         }
