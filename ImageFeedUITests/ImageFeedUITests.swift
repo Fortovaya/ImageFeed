@@ -40,13 +40,13 @@ final class ImageFeedUITests: XCTestCase {
         
         loginTextField.tap()
         XCTAssertTrue(app.keyboards.element.waitForExistence(timeout: 10), "Клавиатура не появилась после тап по логину")
-        loginTextField.typeText("test@mail.ru")
+        loginTextField.typeText("")
         
         Thread.sleep(forTimeInterval: 5)
         
         passwordTextField.tap()
         XCTAssertTrue(app.keyboards.element.waitForExistence(timeout: 10), "Клавиатура не появилась после тап по паролю")
-        passwordTextField.typeText("password")
+        passwordTextField.typeText("")
         
         Thread.sleep(forTimeInterval: 5)
         
@@ -66,7 +66,43 @@ final class ImageFeedUITests: XCTestCase {
     
     @MainActor
     func testFeed() throws {
-        // тестируем сценарий ленты
+        let tablesQuery = app.tables
+        
+        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        cell.swipeUp()
+        
+        Thread.sleep(forTimeInterval: 5)
+        
+        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        
+        
+        let likeButtonOff = cellToLike.buttons["No Active"]
+        let likeButtonOn = cellToLike.buttons["Active"]
+        
+        XCTAssertTrue(likeButtonOff.exists)
+        likeButtonOff.tap()
+        
+//        cellToLike.buttons["No Active"].tap()
+        Thread.sleep(forTimeInterval: 5)
+        
+//        cellToLike.buttons["Active"].tap()
+        XCTAssertTrue(likeButtonOn.exists)
+        Thread.sleep(forTimeInterval: 3)
+        likeButtonOn.tap()
+        
+//        cellToLike.tap()
+        Thread.sleep(forTimeInterval: 3)
+        
+        cellToLike.tap()
+        Thread.sleep(forTimeInterval: 3)
+        
+        
+        let image = app.scrollViews.images.element(boundBy: 0)
+        image.pinch(withScale: 3, velocity: 1)
+        image.pinch(withScale: 0.5, velocity: -1)
+    
+        let navBackButtonWhiteButton = app.buttons["navBackButtonWhite"]
+        navBackButtonWhiteButton.tap()
     }
     
     @MainActor
