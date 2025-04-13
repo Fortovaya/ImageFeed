@@ -11,7 +11,7 @@ protocol ImagesListViewControllerProtocol: AnyObject {
     func updateTableViewAnimated(oldCount: Int, newCount: Int)
     func showErrorAlert(with title: String, message: String)
     func updateCellLikeStatus(for photoId: String)
-    func updateCellHeight(at indexPath: IndexPath)
+//    func updateCellHeight(at indexPath: IndexPath)
 }
 
 final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
@@ -71,10 +71,6 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         ])
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-    }
-    
-    func updateCellHeight(at indexPath: IndexPath) {
-        tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
     func updateTableViewAnimated(oldCount: Int, newCount: Int) {
@@ -138,6 +134,7 @@ extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
+        
         if indexPath.row == presenter.photos.count - 1 {
             presenter.fetchPhotosNextPage()
         }
@@ -148,7 +145,6 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        presenter.cellSelected(at: indexPath)
         
         let photo = presenter.photos[indexPath.row]
         

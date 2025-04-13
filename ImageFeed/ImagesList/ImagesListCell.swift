@@ -8,7 +8,6 @@
 import UIKit
 import Kingfisher
 
-
 final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     
     weak var delegate: ImagesListCellDelegate?
@@ -103,6 +102,8 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     private func loadImage(from url: URL) {
         
         cellImage.contentMode = .center
+        likeButton.isHidden = true
+        dateLabel.isHidden = true
         
         let resource = KF.ImageResource(downloadURL: url, cacheKey: url.absoluteString)
         

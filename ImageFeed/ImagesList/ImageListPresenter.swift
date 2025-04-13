@@ -15,11 +15,10 @@ protocol ImagesListPresenterProtocol: AnyObject {
     func changeLike(photoId: String, isLike: Bool)
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath)
     func calculateHeightForRow(at indexPath: IndexPath, tableViewWidth: CGFloat) -> CGFloat
-    func cellSelected(at indexPath: IndexPath)
 }
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
-    
+   
     weak var view: ImagesListViewControllerProtocol?
     private let imagesListService: ImagesListServiceProtocol
     private var imageListServiceObserver: Any?
@@ -151,9 +150,5 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         if let observer = imageListServiceObserver {
             NotificationCenter.default.removeObserver(observer)
         }
-    }
-    
-    func cellSelected(at indexPath: IndexPath) {
-        view?.updateCellHeight(at: indexPath)
     }
 }
