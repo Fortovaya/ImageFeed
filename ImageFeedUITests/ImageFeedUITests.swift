@@ -39,12 +39,29 @@ final class ImageFeedUITests: XCTestCase {
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 10), "Поле для пароля не найдено")
         
         loginTextField.tap()
+        XCTAssertTrue(app.keyboards.element.waitForExistence(timeout: 10), "Клавиатура не появилась после тап по логину")
         loginTextField.typeText("test@mail.ru")
         
+        Thread.sleep(forTimeInterval: 5)
+        
         passwordTextField.tap()
+        XCTAssertTrue(app.keyboards.element.waitForExistence(timeout: 10), "Клавиатура не появилась после тап по паролю")
         passwordTextField.typeText("password")
         
+        Thread.sleep(forTimeInterval: 5)
+        
         webView.swipeUp()
+        
+        Thread.sleep(forTimeInterval: 5)
+        
+        webView.buttons["Login"].tap()
+        
+        Thread.sleep(forTimeInterval: 5)
+        
+        let tablesQuery = app.tables
+        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        
+        XCTAssertTrue(cell.waitForExistence(timeout: 10), "Ячейка не появилась — возможно, не загрузилась лента")
     }
     
     @MainActor
