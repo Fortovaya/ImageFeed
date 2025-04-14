@@ -65,6 +65,9 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
         super.viewDidLoad()
         setupUI()
         presenter.viewDidLoad()
+#if DEBUG
+        setupDebugAccessibilityIdentifier()
+#endif
     }
     
     //MARK: - Override methods
@@ -177,4 +180,10 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
         })
         errorAlert.showAlert(with: alertmodel)
     }
+    
+#if DEBUG
+    private func setupDebugAccessibilityIdentifier(){
+        logoutButton.accessibilityIdentifier = "logOutButton"
+    }
+#endif
 }

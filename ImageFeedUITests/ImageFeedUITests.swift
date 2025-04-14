@@ -10,12 +10,18 @@ import XCTest
 final class ImageFeedUITests: XCTestCase {
     
     private var app: XCUIApplication!
+    let fullName = ""
+    let username = ""
+    let email = ""
+    let password = ""
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        app = XCUIApplication()
-        app.launch()
         continueAfterFailure = false
+        app = XCUIApplication()
+        app.launchArguments = ["UITEST"]
+        app.launch()
+        
     }
     
     override func tearDownWithError() throws {
@@ -40,13 +46,13 @@ final class ImageFeedUITests: XCTestCase {
         
         loginTextField.tap()
         XCTAssertTrue(app.keyboards.element.waitForExistence(timeout: 10), "Клавиатура не появилась после тап по логину")
-        loginTextField.typeText("")
+        loginTextField.typeText(email)
         
         Thread.sleep(forTimeInterval: 5)
         
         passwordTextField.tap()
         XCTAssertTrue(app.keyboards.element.waitForExistence(timeout: 10), "Клавиатура не появилась после тап по паролю")
-        passwordTextField.typeText("")
+        passwordTextField.typeText(password)
         
         Thread.sleep(forTimeInterval: 5)
         
@@ -66,51 +72,51 @@ final class ImageFeedUITests: XCTestCase {
     
     @MainActor
     func testFeed() throws {
-        let tablesQuery = app.tables
+        let table = app.tables
         
-        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        cell.swipeUp()
+        let firstCell = table.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 10), "Первая ячейка не появилась")
         
-        Thread.sleep(forTimeInterval: 5)
+        firstCell.swipeUp()
         
-        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        let secondCell = table.cells.element(boundBy: 1)
+        XCTAssertTrue(secondCell.waitForExistence(timeout: 10), "Вторая ячейка не появилась после скролла")
         
+        let likeButton = secondCell.buttons["likeButton"]
+        XCTAssertTrue(likeButton.waitForExistence(timeout: 10), "Кнопка лайка не найдена")
+        likeButton.tap()
         
-        let likeButtonOff = cellToLike.buttons["No Active"]
-        let likeButtonOn = cellToLike.buttons["Active"]
+        let existsPredicate = NSPredicate(format: "exists == true")
+        expectation(for: existsPredicate, evaluatedWith: likeButton, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
         
-        XCTAssertTrue(likeButtonOff.exists)
-        likeButtonOff.tap()
+        likeButton.tap()
+        expectation(for: existsPredicate, evaluatedWith: likeButton, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
         
-//        cellToLike.buttons["No Active"].tap()
-        Thread.sleep(forTimeInterval: 5)
+        secondCell.tap()
+        let fullScreenImage = app.scrollViews.images.element(boundBy: 0)
+        XCTAssertTrue(fullScreenImage.waitForExistence(timeout: 10), "Картинка не загрузилась после перехода")
         
-//        cellToLike.buttons["Active"].tap()
-        XCTAssertTrue(likeButtonOn.exists)
-        Thread.sleep(forTimeInterval: 3)
-        likeButtonOn.tap()
+        fullScreenImage.pinch(withScale: 3, velocity: 1)
+        fullScreenImage.pinch(withScale: 0.5, velocity: -1)
         
-//        cellToLike.tap()
-        Thread.sleep(forTimeInterval: 3)
+        let backButton = app.buttons["navBackButtonWhite"]
+        XCTAssertTrue(backButton.waitForExistence(timeout: 5), "Кнопка назад не найдена")
+        backButton.tap()
         
-        cellToLike.tap()
-        Thread.sleep(forTimeInterval: 3)
-        
-        
-        let image = app.scrollViews.images.element(boundBy: 0)
-        image.pinch(withScale: 3, velocity: 1)
-        image.pinch(withScale: 0.5, velocity: -1)
-    
-        let navBackButtonWhiteButton = app.buttons["navBackButtonWhite"]
-        navBackButtonWhiteButton.tap()
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5), "Не вернулись в ленту")
     }
     
     @MainActor
     func testProfile() throws {
-        // тестируем сценарий профиля
+        sleep(3)
+        app.tabBars.buttons.element(boundBy: 1).tap()
+        
+        XCTAssertTrue(app.staticTexts[fullName].exists)
+        XCTAssertTrue(app.staticTexts[username].exists)
+        app.buttons["logOutButton"].tap()
+        
+        app.alerts["AlertPresenter"].scrollViews.otherElements.buttons["Yes"].tap()
     }
 }
-
-
-
-//        print(app.debugDescription)

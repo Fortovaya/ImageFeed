@@ -11,7 +11,6 @@ protocol ImagesListViewControllerProtocol: AnyObject {
     func updateTableViewAnimated(oldCount: Int, newCount: Int)
     func showErrorAlert(with title: String, message: String)
     func updateCellLikeStatus(for photoId: String)
-//    func updateCellHeight(at indexPath: IndexPath)
 }
 
 final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
@@ -134,6 +133,9 @@ extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
+        if ProcessInfo.processInfo.arguments.contains("UITEST") {
+            return
+        }
         
         if indexPath.row == presenter.photos.count - 1 {
             presenter.fetchPhotosNextPage()

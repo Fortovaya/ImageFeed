@@ -25,11 +25,21 @@ final class AlertPresenter: AlertPresenterProtocol {
         }
         alert.addAction(actionOne)
         
+#if DEBUG
+        actionOne.setValue("No", forKey: "accessibilityIdentifier")
+#endif
+        
         if model.hasSecondButton {
             let actionTwo = UIAlertAction(title: model.secondButtonText, style: .cancel) { _ in
                 model.secondButtonCompletion?()
             }
             alert.addAction(actionTwo)
+            
+            // Устанавливаем accessibilityIdentifier для кнопки "Да"
+#if DEBUG
+            actionTwo.setValue("Yes", forKey: "accessibilityIdentifier")
+#endif
+            
         }
         
         viewController?.present(alert, animated: true, completion: nil)
