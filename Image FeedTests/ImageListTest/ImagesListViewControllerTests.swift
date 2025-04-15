@@ -18,21 +18,17 @@ class ImagesListViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        // Создаем мок для ImagesListViewControllerProtocol
         mockView = MockImagesListViewControllerProtocol()
         
-        // Инициализируем контроллер
         viewController = ImagesListViewController()
         
-        // Присваиваем презентер с моком
         let mockPresenter = MockImagesListPresenter()
         mockPresenter.view = mockView
         viewController.testablePresenter = mockPresenter
         
-        // Загружаем view
         viewController.loadViewIfNeeded()
     }
-
+    
     override func tearDown() {
         viewController = nil
         mockView = nil
@@ -40,17 +36,14 @@ class ImagesListViewControllerTests: XCTestCase {
     }
     
     func testUpdateTableViewAnimated() {
-        // Просто выводим в консоль
         print("testUpdateTableViewAnimated запускается")
     }
     
     func testShowErrorAlert() {
-        // Просто выводим в консоль
         print("testShowErrorAlert запускается")
     }
     
     func testUpdateCellLikeStatus() {
-        // Просто выводим в консоль
         print("testUpdateCellLikeStatus запускается")
     }
 }

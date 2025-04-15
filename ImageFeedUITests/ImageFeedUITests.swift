@@ -35,7 +35,6 @@ final class ImageFeedUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["UITEST"]
         app.launch()
-        
     }
     
     override func tearDownWithError() throws {

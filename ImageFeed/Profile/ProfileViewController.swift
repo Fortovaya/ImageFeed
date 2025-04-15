@@ -203,7 +203,7 @@ extension ProfileViewController {
     }
     
     func getAvatarImage() -> UIImage? {
-           return avatarImageView.image
-       }
+        return avatarImageView.image
+    }
 }
 #endif
