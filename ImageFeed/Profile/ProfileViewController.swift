@@ -187,3 +187,23 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
     }
 #endif
 }
+
+#if DEBUG
+extension ProfileViewController {
+    func getNameLabelText() -> String? {
+        return nameLabel.text
+    }
+    
+    func getLoginNameLabelText() -> String? {
+        return loginNameLabel.text
+    }
+    
+    func getDescriptionLabelText() -> String? {
+        return descriptionLabel.text
+    }
+    
+    func getAvatarImage() -> UIImage? {
+           return avatarImageView.image
+       }
+}
+#endif

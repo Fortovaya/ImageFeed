@@ -17,7 +17,7 @@ final class WebViewTests: XCTestCase {
         presenter.view = viewController
         
         // when
-        _ = viewController.view  // это триггерит вызов viewDidLoad()
+        _ = viewController.view  
 
         // then
         XCTAssertTrue(presenter.viewDidLoadCalled, "Метод viewDidLoad() не был вызван у презентера")

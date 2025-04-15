@@ -173,3 +173,12 @@ extension ImagesListViewController: ImagesListCellDelegate {
         
     }
 }
+
+#if DEBUG
+extension ImagesListViewController {
+    var testablePresenter: ImagesListPresenterProtocol {
+        get { return presenter }
+        set { presenter = newValue }
+    }
+}
+#endif
