@@ -29,7 +29,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         likeButton.addTarget(nil, action: #selector(didTapLikeButton), for: .touchUpInside)
         likeButton.isHidden = true
         likeButton.translatesAutoresizingMaskIntoConstraints = false
-        likeButton.accessibilityIdentifier = "likeButton"
+        likeButton.accessibilityIdentifier = "LikeButton"
         return likeButton
     }()
     

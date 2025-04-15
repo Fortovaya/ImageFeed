@@ -183,7 +183,7 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
     
 #if DEBUG
     private func setupDebugAccessibilityIdentifier(){
-        logoutButton.accessibilityIdentifier = "logOutButton"
+        logoutButton.accessibilityIdentifier = "LogOutButton"
     }
 #endif
 }

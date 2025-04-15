@@ -10,10 +10,24 @@ import XCTest
 final class ImageFeedUITests: XCTestCase {
     
     private var app: XCUIApplication!
-    let fullName = ""
-    let username = ""
-    let email = ""
-    let password = ""
+    
+    private enum testData {
+        static let fullName = ""
+        static let username = ""
+        static let email = ""
+        static let password = ""
+    }
+    
+    private enum Identifiers {
+        static let authenticateButton = "Authenticate"
+        static let unsplashWebView = "UnsplashWebView"
+        static let loginButton = "Login"
+        static let likeButton = "LikeButton"
+        static let navBackButton = "navBackButtonWhite"
+        static let logOutButton = "LogOutButton"
+        static let alertPresenter = "AlertPresenter"
+        static let alertYesButton = "Yes"
+    }
     
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -31,11 +45,11 @@ final class ImageFeedUITests: XCTestCase {
     }
     
     func testAuth() throws {
-        let activeButton = app.buttons["Authenticate"]
+        let activeButton = app.buttons[Identifiers.authenticateButton]
         XCTAssertTrue(activeButton.waitForExistence(timeout: 5), "Кнопка 'Login' не появилась на экране")
         activeButton.tap()
         
-        let webView = app.webViews["UnsplashWebView"]
+        let webView = app.webViews[Identifiers.unsplashWebView]
         XCTAssertTrue(webView.waitForExistence(timeout: 5), "WebView не загрузился")
         
         let loginTextField = webView.descendants(matching: .textField).element
@@ -46,13 +60,13 @@ final class ImageFeedUITests: XCTestCase {
         
         loginTextField.tap()
         XCTAssertTrue(app.keyboards.element.waitForExistence(timeout: 10), "Клавиатура не появилась после тап по логину")
-        loginTextField.typeText(email)
+        loginTextField.typeText(testData.email)
         
         Thread.sleep(forTimeInterval: 5)
         
         passwordTextField.tap()
         XCTAssertTrue(app.keyboards.element.waitForExistence(timeout: 10), "Клавиатура не появилась после тап по паролю")
-        passwordTextField.typeText(password)
+        passwordTextField.typeText(testData.password)
         
         Thread.sleep(forTimeInterval: 5)
         
@@ -82,7 +96,7 @@ final class ImageFeedUITests: XCTestCase {
         let secondCell = table.cells.element(boundBy: 1)
         XCTAssertTrue(secondCell.waitForExistence(timeout: 10), "Вторая ячейка не появилась после скролла")
         
-        let likeButton = secondCell.buttons["likeButton"]
+        let likeButton = secondCell.buttons[Identifiers.likeButton]
         XCTAssertTrue(likeButton.waitForExistence(timeout: 10), "Кнопка лайка не найдена")
         likeButton.tap()
         
@@ -101,7 +115,7 @@ final class ImageFeedUITests: XCTestCase {
         fullScreenImage.pinch(withScale: 3, velocity: 1)
         fullScreenImage.pinch(withScale: 0.5, velocity: -1)
         
-        let backButton = app.buttons["navBackButtonWhite"]
+        let backButton = app.buttons[Identifiers.navBackButton]
         XCTAssertTrue(backButton.waitForExistence(timeout: 5), "Кнопка назад не найдена")
         backButton.tap()
         
@@ -113,10 +127,10 @@ final class ImageFeedUITests: XCTestCase {
         sleep(3)
         app.tabBars.buttons.element(boundBy: 1).tap()
         
-        XCTAssertTrue(app.staticTexts[fullName].exists)
-        XCTAssertTrue(app.staticTexts[username].exists)
-        app.buttons["logOutButton"].tap()
+        XCTAssertTrue(app.staticTexts[testData.fullName].exists)
+        XCTAssertTrue(app.staticTexts[testData.username].exists)
+        app.buttons[Identifiers.logOutButton].tap()
         
-        app.alerts["AlertPresenter"].scrollViews.otherElements.buttons["Yes"].tap()
+        app.alerts[Identifiers.alertPresenter].scrollViews.otherElements.buttons[Identifiers.alertYesButton].tap()
     }
 }
