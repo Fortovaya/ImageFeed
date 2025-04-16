@@ -131,5 +131,8 @@ final class ImageFeedUITests: XCTestCase {
         app.buttons[Identifiers.logOutButton].tap()
         
         app.alerts[Identifiers.alertPresenter].scrollViews.otherElements.buttons[Identifiers.alertYesButton].tap()
+        
+        let activeButton = app.buttons[Identifiers.authenticateButton]
+        XCTAssertTrue(activeButton.waitForExistence(timeout: 5), "Экран авторизации не открылся после выхода")
     }
 }
