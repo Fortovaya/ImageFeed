@@ -7,7 +7,7 @@
 @testable import ImageFeed
 import Foundation
 
-class MockImagesListViewControllerProtocol: ImagesListViewControllerProtocol {
+final class MockImagesListViewControllerProtocol: ImagesListViewControllerProtocol {
     var updateTableViewAnimatedCalled = false
     var showErrorAlertCalled = false
     var updateCellLikeStatusCalled = false

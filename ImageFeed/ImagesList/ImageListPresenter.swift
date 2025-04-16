@@ -4,7 +4,6 @@
 //
 //  Created by Алина on 13.04.2025.
 //
-
 import UIKit
 
 protocol ImagesListPresenterProtocol: AnyObject {
@@ -18,7 +17,7 @@ protocol ImagesListPresenterProtocol: AnyObject {
 }
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
-   
+    
     weak var view: ImagesListViewControllerProtocol?
     private let imagesListService: ImagesListServiceProtocol
     private var imageListServiceObserver: Any?
@@ -137,13 +136,13 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         let newCount = imagesListService.photos.count
         
         if oldCount != newCount {
-               let newPhotos = imagesListService.photos.suffix(newCount - oldCount)
-               photos.append(contentsOf: newPhotos)
-               
-               DispatchQueue.main.async {
-                   self.view?.updateTableViewAnimated(oldCount: oldCount, newCount: newCount)
-               }
-           }
+            let newPhotos = imagesListService.photos.suffix(newCount - oldCount)
+            photos.append(contentsOf: newPhotos)
+            
+            DispatchQueue.main.async {
+                self.view?.updateTableViewAnimated(oldCount: oldCount, newCount: newCount)
+            }
+        }
     }
     
     deinit {

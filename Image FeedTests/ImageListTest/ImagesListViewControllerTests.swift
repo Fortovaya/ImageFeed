@@ -7,13 +7,10 @@
 import XCTest
 @testable import ImageFeed
 
-import XCTest
-@testable import ImageFeed
-
-class ImagesListViewControllerTests: XCTestCase {
+final class ImagesListViewControllerTests: XCTestCase {
     
-    var viewController: ImagesListViewController!
-    var mockView: MockImagesListViewControllerProtocol!
+    private var viewController: ImagesListViewController!
+    private var mockView: MockImagesListViewControllerProtocol!
     
     override func setUp() {
         super.setUp()
@@ -35,20 +32,15 @@ class ImagesListViewControllerTests: XCTestCase {
         super.tearDown()
     }
     
-    func testUpdateTableViewAnimated() {
+    private func testUpdateTableViewAnimated() {
         print("testUpdateTableViewAnimated запускается")
     }
     
-    func testShowErrorAlert() {
+    private func testShowErrorAlert() {
         print("testShowErrorAlert запускается")
     }
     
-    func testUpdateCellLikeStatus() {
+    private func testUpdateCellLikeStatus() {
         print("testUpdateCellLikeStatus запускается")
     }
 }
-
-
-
-
-

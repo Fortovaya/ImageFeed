@@ -8,7 +8,7 @@
 import XCTest
 @testable import ImageFeed
 
-class ProfileViewControllerTests: XCTestCase {
+final class ProfileViewControllerTests: XCTestCase {
     
     var viewController: ProfileViewController!
     

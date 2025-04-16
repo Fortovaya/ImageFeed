@@ -36,10 +36,10 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
     
     func shouldHideProgress(for value: Float) -> Bool {
-        return abs(value - 1.0) <= 0.0001
+        abs(value - 1.0) <= 0.0001
     }
     
     func code(from url: URL) -> String? {
-        return authHelper.code(from: url)
+        authHelper.code(from: url)
     }
 }
