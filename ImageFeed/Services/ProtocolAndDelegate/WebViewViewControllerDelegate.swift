@@ -4,7 +4,6 @@
 //
 //  Created by Алина on 16.02.2025.
 //
-
 import Foundation
 
 protocol WebViewViewControllerDelegate: AnyObject {

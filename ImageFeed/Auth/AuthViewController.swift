@@ -75,6 +75,10 @@ final class AuthViewController: UIViewController {
             activeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             activeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -90)
         ])
+        
+#if DEBUG
+        activeButton.accessibilityIdentifier = "Authenticate"
+#endif
     }
     
     private func configureBackButton() {
@@ -87,6 +91,12 @@ final class AuthViewController: UIViewController {
     //MARK: - Action
     @objc private func didTapActiveButton(){
         let webViewVC = WebViewViewController()
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+        
+        webViewVC.presenter = webViewPresenter
+        webViewPresenter.view = webViewVC
+       
         webViewVC.delegate = self
         
         let navigationController = UINavigationController(rootViewController: webViewVC)

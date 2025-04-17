@@ -8,7 +8,6 @@
 import UIKit
 import Kingfisher
 
-
 final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     
     weak var delegate: ImagesListCellDelegate?
@@ -30,6 +29,7 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         likeButton.addTarget(nil, action: #selector(didTapLikeButton), for: .touchUpInside)
         likeButton.isHidden = true
         likeButton.translatesAutoresizingMaskIntoConstraints = false
+        likeButton.accessibilityIdentifier = "LikeButton"
         return likeButton
     }()
     
@@ -72,8 +72,8 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     private func setupCell(){
         contentView.clipsToBounds = true
         contentView.addSubview(cellImage)
-        contentView.addSubview(likeButton)
         contentView.addSubview(dateLabel)
+        contentView.addSubview(likeButton)
         
         NSLayoutConstraint.activate([
             cellImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -103,6 +103,8 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
     private func loadImage(from url: URL) {
         
         cellImage.contentMode = .center
+        likeButton.isHidden = true
+        dateLabel.isHidden = true
         
         let resource = KF.ImageResource(downloadURL: url, cacheKey: url.absoluteString)
         
@@ -125,8 +127,8 @@ final class ImagesListCell: UITableViewCell, ImagesListCellProtocol {
         cellImage.kf.indicatorType = .activity
     }
     
-    func setIsLiked(_ isLike: Bool) {
-        let likeImage = isLike ? UIImage(named: "Active") : UIImage(named: "No Active")
+    func setIsLiked(_ isLiked: Bool) {
+        let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
         likeButton.setImage(likeImage, for: .normal)
     }
     

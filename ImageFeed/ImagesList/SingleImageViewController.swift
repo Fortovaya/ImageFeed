@@ -105,6 +105,10 @@ final class SingleImageViewController: UIViewController {
             backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 9),
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 11)
         ])
+        
+#if DEBUG
+        backButton.accessibilityIdentifier = "navBackButtonWhite"
+#endif
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {

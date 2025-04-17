@@ -4,18 +4,21 @@
 //
 //  Created by Алина on 16.02.2025.
 //
-
 import UIKit
 @preconcurrency import WebKit
 
-final class WebViewViewController: UIViewController, WKUIDelegate {
-    //MARK: - Enum
-    enum WebViewConstants {
-        static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-    }
+public protocol WebViewViewControllerProtocol: AnyObject {
+    var presenter: WebViewPresenterProtocol? { get set }
+    func load(request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
+}
+
+final class WebViewViewController: UIViewController, WKUIDelegate, WebViewViewControllerProtocol {
     
     //MARK: - Delegate
     weak var delegate: WebViewViewControllerDelegate?
+    var presenter: WebViewPresenterProtocol? = WebViewPresenter(authHelper: AuthHelper())
     
     // MARK: - Private properties
     private lazy var webView: WKWebView = {
@@ -41,27 +44,24 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         return button
     }()
     
-    private var estimatedProgressObservation: NSKeyValueObservation?
-    
     //MARK: - Life cycle
     override func viewDidLoad(){
         super.viewDidLoad()
+        presenter?.viewDidLoad()
         view.backgroundColor = .ypWhite
         configureWebView()
-        loadAuthView()
         configureProgressView()
         
         let backButton = UIBarButtonItem(customView: backAuthVCButton)
         navigationItem.leftBarButtonItem = backButton
         
-        addEstimatedProgressObservation()
         webView.navigationDelegate = self
     }
     
     // MARK: - Override methods
     override func observeValue( forKeyPath keyPath: String?, of object: Any?,change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
+            presenter?.didUpdateProgressValue(webView.estimatedProgress)
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
@@ -71,13 +71,7 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
-    
-    //MARK: - Deinit
-    deinit {
-        guard let estimatedProgressObservation = estimatedProgressObservation else { return }
-        estimatedProgressObservation.invalidate()
-    }
-    
+
     // MARK: - Private methods
     private func configureWebView(){
         view.addSubview(webView)
@@ -88,6 +82,9 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+#if DEBUG
+        webView.accessibilityIdentifier = "UnsplashWebView"
+#endif
     }
     
     private func configureProgressView(){
@@ -100,39 +97,20 @@ final class WebViewViewController: UIViewController, WKUIDelegate {
         ])
     }
     
-    private func loadAuthView(){
-        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else { return }
-        
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-        guard let url = urlComponents.url else { return }
-        
-        let request = URLRequest(url: url)
+    func load(request: URLRequest) {
         webView.load(request)
     }
     
-    private func updateProgress(){
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
     }
     
-    private func addEstimatedProgressObservation(){
-        estimatedProgressObservation = webView.observe(
-            \.estimatedProgress,
-             options: [],
-             changeHandler: {[weak self] _, _ in
-                 guard let self = self else { return }
-                 self.updateProgress()
-             }
-        )
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
     }
     
-    @objc
-    private func didTapBackAuthVCButton(){
+    @objc private func didTapBackAuthVCButton(){
         delegate?.webViewViewControllerDidCancel(self)
     }
 }
@@ -150,14 +128,8 @@ extension WebViewViewController: WKNavigationDelegate {
     }
     
     private func code(from navigationAction: WKNavigationAction) -> String? {
-        if
-            let url = navigationAction.request.url,
-            let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/authorize/native",
-            let items = urlComponents.queryItems,
-            let codeItem = items.first(where: { $0.name == "code" })
-        {
-            return codeItem.value
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url)
         } else {
             return nil
         }

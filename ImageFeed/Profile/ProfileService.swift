@@ -12,8 +12,9 @@ final class ProfileService {
     //MARK: - Private variables
     private let oAuth2TokenStorage = OAuth2TokenStorage.storage
     private let urlSession = URLSession.shared
+    private let authConfiguration = AuthConfiguration.standard
     private var task: URLSessionTask?
-    private var isFetching = false // для отслеживания выполнения процесса (гонки)
+    private var isFetching = false
     
     static let shared = ProfileService()
     private init() {}
@@ -23,7 +24,7 @@ final class ProfileService {
     //MARK: - Private Method
     func makeProfileRequest(token: String) -> Result<URLRequest, OAuthTokenRequestError> {
         
-        guard let url = URL(string: "me", relativeTo: Constants.defaultBaseURL) else {
+        guard let url = URL(string: "me", relativeTo: authConfiguration.defaultBaseURL) else {
             print("❌ Ошибка: Неверный URL ProfileRequest")
             return.failure(.invalidBaseURL)
         }

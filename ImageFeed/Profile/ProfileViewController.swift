@@ -8,7 +8,9 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController, ProfileViewProtocol {
+    
+    private lazy var presenter = ProfilePresenter(view: self)
     
     // MARK: - Private properties
     private lazy var avatarImageView: UIImageView = {
@@ -56,24 +58,16 @@ final class ProfileViewController: UIViewController {
         return logoutButton
     }()
     
-    private let profileService = ProfileService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?
     private lazy var errorAlert = AlertPresenter(viewController: self)
-    
-    //MARK: - Deinit
-    deinit {
-        if let observer = profileImageServiceObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-    }
     
     //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        updateProfileDetails()
-        addProfileImageObserver()
-        updateAvatar()
+        presenter.viewDidLoad()
+#if DEBUG
+        setupDebugAccessibilityIdentifier()
+#endif
     }
     
     //MARK: - Override methods
@@ -148,51 +142,28 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func updateProfileDetails() {
-        if let profile = profileService.profile {
-            print("Profile loaded: \(profile.name), \(profile.loginName), \(String(describing: profile.bio))")
-            nameLabel.text = profile.name
-            loginNameLabel.text = profile.loginName
-            descriptionLabel.text = profile.bio
-            updateAvatar()
-        } else {
-            print("Профиль не загружен")
+    func updateProfileDetails(name: String, login: String, bio: String) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            nameLabel.text = name
+            loginNameLabel.text = login
+            descriptionLabel.text = bio
         }
     }
     
-    private func updateAvatar(){
-        guard let profileImageURL = ProfileImageService.shared.avatarURL, let updateUrl = URL(string: profileImageURL) else {
-            print("❌ Ошибка: avatarURL отсутствует или невалидный")
-            return
-        }
-        print("Обновляем аватар: \(updateUrl.absoluteString)")
-        avatarImageView.kf.setImage(with: updateUrl, placeholder: UIImage(named: "PlaceholderAvatar"))
+    func updateAvatar(with url: URL) {
+        avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "PlaceholderAvatar"))
     }
     
-    private func addProfileImageObserver(){
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.updateAvatar()
-        }
-    }
-    
-    private func resetToDefaultProfileData() {
+    func resetToDefaultProfileData() {
         let cleanURL: URL? = nil
         self.avatarImageView.kf.setImage(with: cleanURL, placeholder: UIImage(named: "PlaceholderAvatar"))
         
         DispatchQueue.main.async {
-            let defaultImage = UIImage(named: "Photo")
-            let defaultName = "Екатерина Новикова"
-            let defaultLoginName = "@ekaterina_nov"
-            let defaultDescription = "Hello, world!"
-            
-            self.avatarImageView.image = defaultImage
-            self.nameLabel.text = defaultName
-            self.loginNameLabel.text = defaultLoginName
-            self.descriptionLabel.text = defaultDescription
+            self.avatarImageView.image = UIImage(named: "Photo")
+            self.nameLabel.text = "Екатерина Новикова"
+            self.loginNameLabel.text = "@ekaterina_nov"
+            self.descriptionLabel.text = "Hello, world!"
         }
     }
     
@@ -205,15 +176,34 @@ final class ProfileViewController: UIViewController {
                                     completion: nil,
                                     secondButtonText: "Да",
                                     secondButtonCompletion: {
-            self.resetToDefaultProfileData()
-            ProfileLogoutService.shared.logout()
-
-            let splashViewController = SplashViewController()
-            if let window = UIApplication.shared.windows.first {
-                window.rootViewController = splashViewController
-                window.makeKeyAndVisible()
-            }
+            self.presenter.logoutTapped()
         })
         errorAlert.showAlert(with: alertmodel)
     }
+    
+#if DEBUG
+    private func setupDebugAccessibilityIdentifier(){
+        logoutButton.accessibilityIdentifier = "LogOutButton"
+    }
+#endif
 }
+
+#if DEBUG
+extension ProfileViewController {
+    func getNameLabelText() -> String? {
+        return nameLabel.text
+    }
+    
+    func getLoginNameLabelText() -> String? {
+        return loginNameLabel.text
+    }
+    
+    func getDescriptionLabelText() -> String? {
+        return descriptionLabel.text
+    }
+    
+    func getAvatarImage() -> UIImage? {
+        return avatarImageView.image
+    }
+}
+#endif
