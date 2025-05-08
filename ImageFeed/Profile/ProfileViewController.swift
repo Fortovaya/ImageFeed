@@ -43,6 +43,7 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
         let descriptionLabel = UILabel()
         descriptionLabel.text = "Hello, world!"
         descriptionLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        descriptionLabel.numberOfLines = 2
         descriptionLabel.textAlignment = .left
         descriptionLabel.textColor = .ypWhite
         return descriptionLabel
